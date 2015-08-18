@@ -1,4 +1,4 @@
-#!/usr/local/package/python2.7/2.7.2/bin/python
+#!/usr/bin/python
 """
 
 bamfilter.py
@@ -514,7 +514,8 @@ def Pileup_and_count(
         post_10_q = 0.05,
         fisher_threshold = 0.05,
         min_depth = 9,
-        compare = False
+        compare = False,
+        print_header = False
         ):
 
     global arg
@@ -546,12 +547,13 @@ def Pileup_and_count(
         #
         # Print header only for testing.
         #
-        if compare:
-            header_str = "#chr\tstart\tend\tref\tobs\tA,C,G,T\tA,C,G,T\tdis_mis\tdis_s_ration\tctrl_mis\tctrl_s_ratio\tfisher\n"
-        else:
-            header_str = "#chr\tstart\tend\tref\tobs\tdepth\tA,C,G,T,\tmis\ts_ratio\t0.1\tratio\t0.9\n"
+        if print_header:
+            if compare:
+                header_str = "#chr\tstart\tend\tref\tobs\tA,C,G,T\tA,C,G,T\tdis_mis\tdis_s_ration\tctrl_mis\tctrl_s_ratio\tfisher\n"
+            else:
+                header_str = "#chr\tstart\tend\tref\tobs\tdepth\tA,C,G,T,\tmis\ts_ratio\t0.1\tratio\t0.9\n"
 
-        w.write( header_str )
+            w.write( header_str )
 
         #
         # STDIN PIPE
@@ -595,20 +597,23 @@ def construct_arguments():
     #
     # Arguments
     #
-    parser = argparse.ArgumentParser( description = 'Fisher mutation caller' )
+    parser = argparse.ArgumentParser( description = 'Fisher mutation caller',
+                                      usage = "%(prog)s [ options ] ")
 
     parser.add_argument( '-1', '--bam1',          help = '1st bam file ( normal )',  type = str,     default = None )
     parser.add_argument( '-2', '--bam2',          help = '2nd bam file ( disease )', type = str,     default = None )
     parser.add_argument( '-o', '--output',        help = 'Output text file',         type = str,     default = None )
 
-    parser.add_argument( '-i', '--input_mpileup', help = 'Input mpileup file',  type = str,  default = None )
+    parser.add_argument( '-i', '--input_mpileup', help = 'Input mpileup file',       type = str,  default = None )
     parser.add_argument( '-c', '--compare',       help = 'Compare two samples', action = 'store_true', default = False )
+
+    parser.add_argument( '-e', '--print_header',  help = 'Print header',        action = 'store_true', default = False )
 
     parser.add_argument( '-r', '--ref_fa',        help = 'Reference FASTA',          type = str,     default = None )
 
     parser.add_argument( '-q', '--base_quality',  help = 'Base quality threshold',   type = int,     default = 15 )
     parser.add_argument( '-m', '--mismatch_rate', help = 'Mismatch rate',            type = float,   default = 0.07 )
-    parser.add_argument( '-p', '--post_10_q', help = '10% posterior quantile threshold', type = float, default = 0.05 )
+    parser.add_argument( '-p', '--post_10_q',     help = '10%% posterior quantile threshold', type = float, default = 0.05 )
     parser.add_argument( '-f', '--fisher_value',  help = 'fisher threshold',         type = float,   default = 0.05 )
     parser.add_argument( '-d', '--min_depth',     help = 'Mimimum depth',            type = float,   default = 9 )
 
@@ -698,7 +703,8 @@ def main():
             post_10_q = arg.post_10_q,
             fisher_threshold = arg.fisher_value,
             min_depth = arg.min_depth,
-            compare = arg.compare
+            compare = arg.compare,
+            print_header = arg.print_header
           )
 
 ################################################################################
