@@ -1,0 +1,36 @@
+#! /usr/bin/env python
+
+from bamfilter.run import *
+import argparse
+
+#
+# top level parser
+#
+parser = argparse.ArgumentParser(prog = "bamfilter")
+parser.add_argument("--version", action = "version", version = "GenomonFisher-0.1.0")
+
+#
+# Positional arguments
+#
+parser.add_argument( "bam",     metavar = 'input.bam', help = "input BAM file",   type = str )
+parser.add_argument( "out_bam", metavar = 'filtered.bam', help = "Filtered BAM file for output", type = str )
+
+#
+# Optional arguments
+#
+parser.add_argument( '-r', '--ref_fa', metavar = "Reference FASTA", help = "Reference FASTA file", type = str )
+parser.add_argument( '-n', '--max_indel', metavar = "Threshold number of indel", help = "Threshold number of deletions and insertions [2]", type = int, default = 2 )
+parser.add_argument( '-d', '--max_distance', metavar = "Max edit distance", help = "Distance value [5]", type = int, default = 5 )
+parser.add_argument( '-m', '--map_quality', metavar = "Map quality threshold", help = "Map quality threshold [30]", type = int, default = 30 )
+
+#
+# Log settings
+#
+parser.add_argument( '-g', '--log_file',  metavar = "Log file name", help = "Log file name", type = str, default = None )
+parser.add_argument( '-l', '--log_level', metavar = "Logging level", help = "Logging level", type = str, default = 'DEBUG' )
+
+
+args = parser.parse_args()
+
+main(args)
+

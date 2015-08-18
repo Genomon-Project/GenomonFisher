@@ -9,7 +9,7 @@ setup(name='genomon_fisher',
     author_email='eigos@hgc.jp',
     url='https://github.com/Genomon-Project/GenomonFisher',
     package_dir = {'': 'lib'},
-    packages=['fisher'],
-    scripts=['fisher'],
+    packages=['fisher','bamfilter'],
+    scripts=['fisher','bamfilter'],
     license='GPL-3'
 )
