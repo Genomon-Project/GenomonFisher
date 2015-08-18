@@ -1,0 +1,50 @@
+#!/usr/local/package/python/current2.7/bin/python
+
+from genofisher.run import *
+import argparse
+
+#
+# Arguments parse
+#
+argvs = sys.argv
+myself = argvs[ 0 ]
+argc = len(argvs)
+
+arg_parser = construct_arguments()
+
+if argc < 2:
+    arg_parser.print_help()
+    sys.exit(1)
+
+
+#
+# Arguments
+#
+parser = argparse.ArgumentParser(prog = "genoFilter")
+
+parser.add_argument( '-1', '--bam1',             help = '1st bam file ( normal )',   type = str,     default = None )
+parser.add_argument( '-2', '--bam2',             help = '2nd bam file ( disease )',  type = str,     default = None )
+parser.add_argument( '-o', '--output',           help = 'Output text file',          type = str,     default = None )
+parser.add_argument( '-i', '--input_mpileup',    help = 'Input mpileup file',        type = str,     default = None )
+parser.add_argument( '-c', '--compare',          help = 'Compare two samples', action = 'store_true', default = False )
+parser.add_argument( '-e', '--print_header',     help = 'Print header',        action = 'store_true', default = False )
+parser.add_argument( '-r', '--ref_fa',           help = 'Reference FASTA',           type = str,     default = None )
+parser.add_argument( '-q', '--mapping_quality',  help = 'Mappint quality threshold', type = int,     default = 15 )
+parser.add_argument( '-Q', '--base_quality',     help = 'Base quality threshold',    type = int,     default = 15 )
+parser.add_argument( '-m', '--mismatch_rate',    help = 'Mismatch rate',             type = float,   default = 0.07 )
+parser.add_argument( '-p', '--post_10_q',        help = '10%% posterior quantile threshold', type = float, default = 0.05 )
+parser.add_argument( '-f', '--fisher_value',     help = 'fisher threshold',          type = float,   default = 0.05 )
+parser.add_argument( '-d', '--min_depth',        help = 'Mimimum depth',             type = float,   default = 9 )
+
+#
+# Log settings
+#
+parser.add_argument( '-g', '--log_file',  help = "Log file name", type = str, default = None )
+parser.add_argument( '-l', '--log_level', help = "Logging level", type = str, default = 'DEBUG' )
+
+args = parser.parse_args()
+
+main(args)
+
+
+
