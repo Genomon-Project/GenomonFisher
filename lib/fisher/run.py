@@ -42,14 +42,17 @@ def main(args):
             in_bam1 = args.bam1,
             in_bam2 = args.bam2,
             out_file = args.output,
-            input_mpileup = args.input_mpileup,
+#            input_mpileup = args.input_mpileup,
             ref_fa = args.ref_fa,
-            threshold = args.base_quality,
-            mismatch_rate = args.mismatch_rate,
+            baseq_thres = args.base_quality,
+            mismatch_rate_disease = args.min_allele_freq,
+            mismatch_rate_normal = args.max_allele_freq,
             post_10_q = args.post_10_q,
             fisher_threshold = args.fisher_value,
             min_depth = args.min_depth,
-            compare = args.compare,
-            print_header = args.print_header
+#            compare = args.compare,
+            print_header = args.print_header,
+            mapq_thres = args.mapping_quality,
+            samtools = args.samtools_path
           )
 

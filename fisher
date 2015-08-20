@@ -9,25 +9,34 @@ import argparse
 parser = argparse.ArgumentParser(prog = "fisher")
 parser.add_argument("--version", action = "version", version = "GenomonFisher-0.1.0")
 
+#
+# optional parameters
+#
 parser.add_argument( 'output', metavar = 'output.txt', help = 'Output text file', type = str, default = None )
-parser.add_argument( '-1', '--bam1', metavar = 'control.bam', help = '1st bam file ( normal )', type = str, default = None )
-parser.add_argument( '-2', '--bam2', metavar = 'tumor.bam', help = '2nd bam file ( disease )', type = str, default = None )
-parser.add_argument( '-i', '--input_mpileup', metavar = 'pileup_format_file', help = 'Input mpileup file', type = str, default = None )
-parser.add_argument( '-c', '--compare', help = 'Compare two samples', action = 'store_true', default = False )
+parser.add_argument( '-1', '--bam1', metavar = 'control.bam', help = '1st bam file ( control )', type = str, default = None )
+parser.add_argument( '-2', '--bam2', metavar = 'disease.bam', help = '2nd bam file ( disease )', type = str, default = None )
+# parser.add_argument( '-i', '--input_mpileup', metavar = 'pileup_format_file', help = 'Input mpileup file', type = str, default = None )
+# parser.add_argument( '-c', '--compare', help = 'Compare two samples', action = 'store_true', default = False )
 parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
-parser.add_argument( '-r', '--ref_fa', metavar = 'reference FASTA', help = 'Reference FASTA', type = str, default = None )
-parser.add_argument( '-q', '--mapping_quality', metavar = 'mapping quality threshold', help = 'Mapping quality threshold', type = int, default = 15 )
+parser.add_argument( '-q', '--mapping_quality', metavar = 'mapping quality threshold', help = 'Mapping quality threshold', type = int, default = 30 )
 parser.add_argument( '-Q', '--base_quality', metavar = 'base quality threshold', help = 'Base quality threshold', type = int, default = 15 )
-parser.add_argument( '-m', '--mismatch_rate', metavar = 'minimum amount of tumor allele frequency', help = 'minimum amount of tumor allele frequency', type = float, default = 0.07 )
+parser.add_argument( '-m', '--min_allele_freq', metavar = 'minimum amount of disease allele frequency', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
+parser.add_argument( '-n', '--max_allele_freq', metavar = 'maximum amount of control allele frequency', help = 'maximum amount of control allele frequency', type = float, default = 0.1 )
 parser.add_argument( '-p', '--post_10_q', metavar='10% posterior quantile threshold', help = '10% posterior quantile threshold', type = float, default = 0.05 )
 parser.add_argument( '-f', '--fisher_value', metavar = 'fisher threshold', help = 'fisher threshold', type = float, default = 0.05 )
-parser.add_argument( '-d', '--min_depth', metavar = 'minimum depth', help = 'Mimimum depth', type = float, default = 9 )
+parser.add_argument( '-d', '--min_depth', metavar = 'minimum depth', help = 'Mimimum depth', type = float, default = 10 )
 
 #
 # Log settings
 #
 parser.add_argument( '-g', '--log_file', metavar = "log file name", help = "Log file name", type = str, default = None )
 parser.add_argument( '-l', '--log_level', metavar = "logging level", help = "Logging level", type = str, default = 'DEBUG' )
+
+#
+# required parameters
+#
+parser.add_argument( '-r', '--ref_fa', metavar = 'reference_FASTA', help = 'Reference FASTA', type = str, default = None , required = True)
+parser.add_argument( '-s', '--samtools_path', metavar = 'samtools_path', help = 'Samtools path', type = str, default = None, required = True)
 
 args = parser.parse_args()
 
