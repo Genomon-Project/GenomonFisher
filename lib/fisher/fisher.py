@@ -91,7 +91,6 @@ def Pileup_out( mpileup, w, threshold, min_depth, compare ):
     global filter_quals
 
     try:
-        return None
         #
         # Prepare mpileup data
         #
@@ -107,12 +106,11 @@ def Pileup_out( mpileup, w, threshold, min_depth, compare ):
         # if int(mp_list[ 3 ]) < min_depth or ( mp_list_len > 6 and int(mp_list[ 6 ]) < min_depth ):
             return None
 
-        if compare:
-            ref_base_count = mp_list[ 7 ].count('.') + mp_list[ 7 ].count(',')
-            ins_base_count = mp_list[ 7 ].count('+')
-            del_base_count = mp_list[ 7 ].count('-')
-            if (int(mp_list[ 6 ]) - ref_base_count + ins_base_count + del_base_count) < 4:
-                return None
+        ref_base_count = mp_list[ 4 ].count('.') + mp_list[ 4 ].count(',')
+        ins_base_count = mp_list[ 4 ].count('+')
+        del_base_count = mp_list[ 4 ].count('-')
+        if (int(mp_list[ 3 ]) - ref_base_count + ins_base_count + del_base_count) < 4:
+            return None
 
         #
         # data_pair IDs
@@ -270,7 +268,7 @@ def Pileup_out( mpileup, w, threshold, min_depth, compare ):
                 #
                 if ref_base_U != 'N' and int( data_pair[ data_id ][ 'proper_read_depth' ] ) >= min_depth:
                     ref_num = base_num[ 'total_' + ref_base_U ]
-
+                        
                     mis_num = 0
                     for nuc in ( 'A', 'C', 'G', 'T' ):
                         data_pair[ data_id ][ nuc ] = base_num[ nuc ]
@@ -284,13 +282,17 @@ def Pileup_out( mpileup, w, threshold, min_depth, compare ):
                                 mis_num = base_num[ tmp ]
                                 mis_base_U = nuc
 
+                    if data_id == POS_DATA2 and data_pair[ POS_DATA1 ][ 'mis_base' ]:
+                        mis_num = base_num[ 'total_' + data_pair[ POS_DATA1 ][ 'mis_base' ] ]
+                        mis_base_U = data_pair[ POS_DATA1 ][ 'mis_base' ]
+
                 ####
                     #
                     # Calculate ratio
                     #
                     data_pair[ data_id ][ 'mis_rate' ] = mis_num / float( data_pair[ data_id ][ 'proper_read_depth' ] )
                     data_pair[ data_id ][ 'mis_base' ] = mis_base_U
-                    if mis_base_U:
+                    if mis_base_U and ( base_num[ mis_base_U ] + base_num[ mis_base_U.lower() ] ) > 0:
                         data_pair[ data_id ][ 's_ratio' ]  = float( base_num[ mis_base_U ] ) / ( base_num[ mis_base_U ] + base_num[ mis_base_U.lower() ] )
                     # else:
                     #    data_pair[ data_id ][ 's_ratio' ]  = float(0)
@@ -303,54 +305,62 @@ def Pileup_out( mpileup, w, threshold, min_depth, compare ):
                     data_pair[ data_id ][ '0.9' ] = scipy.special.btdtri( mis_num + 1, ref_num + 1, 0.9 )
 
                     data_pair[ data_id ][ 'mis_num' ] = mis_num
+            
+                    if 24981825 == int(data_pair[ POS_COORD ]):
+                        print data_pair
             ###
         #
         # Fisher
         #
         # SNV
         #
+        if 24981825 == int(data_pair[ POS_COORD ]):
+            print "------------------------------------------"
         if ( data_pair[ POS_COUNT ] == 2 and
              ref_base_U and
-             mis_base_U and
+             data_pair[ POS_DATA1 ][ 'mis_base' ] and
              'mid' in data_pair[ POS_DATA1 ].keys() and
              'mid' in data_pair[ POS_DATA2 ].keys() and
              'proper_read_depth' in data_pair[ POS_DATA1 ].keys() and
              'proper_read_depth' in data_pair[ POS_DATA2 ].keys() 
            ):
             odds_ratio, fisher_pvalue = fisher(
-                        ( ( int( data_pair[ POS_DATA2 ][ 'total_' + ref_base_U ] ),
-                            int( data_pair[ POS_DATA1 ][ 'total_' + ref_base_U ] ) ),
-                          ( int( data_pair[ POS_DATA2 ][ 'total_' + mis_base_U ] ),
-                            int( data_pair[ POS_DATA1 ][ 'total_' + mis_base_U ] ) ) ),
-                        alternative='two-sided' )
+                        ( ( int( data_pair[ POS_DATA1 ][ 'total_' + ref_base_U ] ),
+                            int( data_pair[ POS_DATA2 ][ 'total_' + ref_base_U ] ) ),
+                          ( int( data_pair[ POS_DATA1 ][ 'total_' + data_pair[ POS_DATA1 ][ 'mis_base' ] ] ),
+                            int( data_pair[ POS_DATA2 ][ 'total_' + data_pair[ POS_DATA1 ][ 'mis_base' ] ] ) ) ),
+                        alternative='two-sided'
+                        )
 
             data_pair[ POS_FISHER_SNV ] = math_log_fisher_pvalue(fisher_pvalue)
+            if 24981825 == int(data_pair[ POS_COORD ]):
+                print data_pair[ POS_FISHER_SNV ]
 
         #
         # INDEL
         #
-        if ( data_pair[ POS_COUNT ] == 2 and 'indel' in data_pair[ POS_DATA2 ] and
-             'depth' in data_pair[ POS_DATA1 ].keys() and
-             'depth' in data_pair[ POS_DATA2 ].keys()
+        if ( data_pair[ POS_COUNT ] == 2 and 'indel' in data_pair[ POS_DATA1 ] and
+             'depth' in data_pair[ POS_DATA2 ].keys() and
+             'depth' in data_pair[ POS_DATA1 ].keys()
            ):
             fisher_pvalue = None
-            for type in data_pair[ POS_DATA2 ][ 'indel' ]:
-                for bases in data_pair[ POS_DATA2 ][ 'indel' ][ type ].keys():
+            for type in data_pair[ POS_DATA1 ][ 'indel' ]:
+                for bases in data_pair[ POS_DATA1 ][ 'indel' ][ type ].keys():
                   
                     # if type in data_pair[ POS_DATA1 ][ 'indel' ] and bases in data_pair[ POS_DATA1 ][ 'indel' ][ type ]:
 
-                    if not isinstance( data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ], int ):
-                        data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ] = 0
-                        data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '+' ] = 0
-                        data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '-' ] = 0
+                    if not isinstance( data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ], int ):
+                        data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ] = 0
+                        data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ '+' ] = 0
+                        data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ '-' ] = 0
 
                     if 1724503 == data_pair[ POS_COORD ]:
-                        depthN = data_pair[ POS_DATA1 ][ 'depth' ] 
-                        misN = data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ]
-                        depthT = data_pair[ POS_DATA2 ][ 'depth' ] 
-                        misT = data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ]
-                        misTp = data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ '+' ]
-                        misTn = data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ '-' ]
+                        depthN = data_pair[ POS_DATA2 ][ 'depth' ] 
+                        misN = data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ]
+                        depthT = data_pair[ POS_DATA1 ][ 'depth' ] 
+                        misT = data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ]
+                        misTp = data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '+' ]
+                        misTn = data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '-' ]
 
                         print "--------------------------------------"
                         print "type : " + type
@@ -363,10 +373,10 @@ def Pileup_out( mpileup, w, threshold, min_depth, compare ):
                         print "misTn : " + str(misTn)
                    
                     odds_ratio, fisher_pvalue = fisher(
-                        ( ( data_pair[ POS_DATA2 ][ 'depth' ] - data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ],
-                            data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ] ),
-                          ( data_pair[ POS_DATA1 ][ 'depth' ] - data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ],
-                            data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ]) ),
+                        ( ( data_pair[ POS_DATA1 ][ 'depth' ] - data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ],
+                            data_pair[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ] ),
+                          ( data_pair[ POS_DATA2 ][ 'depth' ] - data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ],
+                            data_pair[ POS_DATA2 ][ 'indel' ][ type ][ bases ][ 'both' ]) ),
                         alternative='two-sided' )
             
                     if fisher_pvalue != None:
@@ -405,7 +415,6 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
         # barcode SNV output
         #
         if (
-              data[ POS_DATA2 ][ 'mis_rate']      <   mismatch_rate_normal and
               data[ POS_DATA1 ][ 'mis_rate']      >   mismatch_rate_disease and
               data[ POS_DATA1 ][ 'mis_base' ]     !=  data[ POS_REF ]     and
               data[ POS_DATA1 ][ 'proper_read_depth' ] >=  min_depth      and
@@ -431,6 +440,9 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ POS_DATA1 ][ 'mis_rate' ],
                         data[ POS_DATA1 ][ 's_ratio' ],
                         )
+            ###
+            if len( outstr ) > 0:
+                w.write( outstr)
 
         #
         # InDel output
@@ -461,17 +473,25 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                 if type == '+':
                     for bases in str_indel_dict[ type ].keys():
                         #
-                        outstr += data[ POS_CHR ] + '\t' +  \
+                        outstr = data[ POS_CHR ] + '\t' +  \
                                   str( data[ POS_COORD ] ) + '\t' + \
                                   str( data[ POS_COORD ] ) + '\t' + \
                                   str_indel_dict[ type ][ bases ]
+                        ###
+                        if len( outstr ) > 0:
+                            w.write( outstr )
+
                 elif type == '-':
                     for bases in str_indel_dict[ type ].keys():
                         pos = data[ POS_COORD ]
-                        outstr += data[ POS_CHR ] + '\t' + \
+                        #
+                        outstr = data[ POS_CHR ] + '\t' + \
                                   str( pos + 1 ) + '\t' + \
                                   str( pos + len( bases ) ) + '\t' + \
                                   str_indel_dict[ type ][ bases ]
+                        ###
+                        if len( outstr ) > 0:
+                            w.write( outstr )
 
     elif data[ POS_COUNT ] == 2:
 
@@ -479,11 +499,11 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
         # Fisher
         #
         if (
-            data[ POS_DATA1 ][ 'mis_rate' ]          < mismatch_rate_normal and
-            data[ POS_DATA2 ][ 'mis_rate' ]          > mismatch_rate_disease and
-            data[ POS_DATA1 ][ 'proper_read_depth' ] >= min_depth    and
+            data[ POS_DATA2 ][ 'mis_rate' ]          < mismatch_rate_normal and
+            data[ POS_DATA1 ][ 'mis_rate' ]          > mismatch_rate_disease and
             data[ POS_DATA2 ][ 'proper_read_depth' ] >= min_depth    and
-            data[ POS_DATA2 ][ 'mis_base' ]    !=  data[ POS_REF ]   and
+            data[ POS_DATA1 ][ 'proper_read_depth' ] >= min_depth    and
+            data[ POS_DATA1 ][ 'mis_base' ]    !=  data[ POS_REF ]   and
             data[ POS_FISHER_SNV ]           >  fisher_threshold_log
            ):
             #
@@ -498,13 +518,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ POS_COORD ],
                         data[ POS_COORD ],
                         data[ POS_REF ],
-                        data[ POS_DATA2 ][ 'mis_base' ],
-                        )
-                     + '\t{0},{1},{2},{3}'.format(
-                        data[ POS_DATA2 ][ 'total_A' ],
-                        data[ POS_DATA2 ][ 'total_C' ],
-                        data[ POS_DATA2 ][ 'total_G' ],
-                        data[ POS_DATA2 ][ 'total_T' ],
+                        data[ POS_DATA1 ][ 'mis_base' ],
                         )
                      + '\t{0},{1},{2},{3}'.format(
                         data[ POS_DATA1 ][ 'total_A' ],
@@ -512,12 +526,18 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ POS_DATA1 ][ 'total_G' ],
                         data[ POS_DATA1 ][ 'total_T' ],
                         )
-                     + '\t{0:.3f}'.format(data[ POS_DATA2 ][ 'mis_rate' ])
-                     + '\t{0:.3f}'.format(data[ POS_DATA2 ][ 's_ratio' ])
+                     + '\t{0},{1},{2},{3}'.format(
+                        data[ POS_DATA2 ][ 'total_A' ],
+                        data[ POS_DATA2 ][ 'total_C' ],
+                        data[ POS_DATA2 ][ 'total_G' ],
+                        data[ POS_DATA2 ][ 'total_T' ],
+                        )
                      + '\t{0:.3f}'.format(data[ POS_DATA1 ][ 'mis_rate' ])
+                     + '\t{0:.3f}'.format(data[ POS_DATA1 ][ 's_ratio' ])
+                     + '\t{0:.3f}'.format(data[ POS_DATA2 ][ 'mis_rate' ])
                      )
-            if 's_ratio' in data[ POS_DATA1 ].keys():
-                outstr += '\t{0:.3f}'.format(data[ POS_DATA1 ][ 's_ratio' ])
+            if 's_ratio' in data[ POS_DATA2 ].keys():
+                outstr += '\t{0:.3f}'.format(data[ POS_DATA2 ][ 's_ratio' ])
             else:
                 outstr += '\t---'
             outstr += '\t{0:.3f}'.format(data[ POS_FISHER_SNV ])
@@ -536,17 +556,17 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         # chr \t start \t end \t ref1 \t obs1 \tdepth1 \t obs_depth \t ratio \t 
                         #
                         data_type_symbol = '-' if data_type == POS_FISHER_DEL else '+'
-                        normal_misrate = data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA1 ][ 'depth' ] )
-                        disease_misrate = data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA2 ][ 'depth' ] )
+                        normal_misrate = data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA2 ][ 'depth' ] )
+                        disease_misrate = data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA1 ][ 'depth' ] )
                         if (normal_misrate < mismatch_rate_normal and
                             disease_misrate > mismatch_rate_disease and
-                            data[ POS_DATA1 ][ 'depth' ] >= min_depth and
-                            data[ POS_DATA2 ][ 'depth' ] >= min_depth
+                            data[ POS_DATA2 ][ 'depth' ] >= min_depth and
+                            data[ POS_DATA1 ][ 'depth' ] >= min_depth
                            ):
                             f_print = True
                             fisher_tmp_list = indel_data.split( ':' )
-                            if isinstance( data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ], int ):
-                                normal_tmp = data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] 
+                            if isinstance( data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ], int ):
+                                normal_tmp = data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] 
                             else:
                                 normal_tmp = 0
                             ###
@@ -558,17 +578,17 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                                         '-' if data_type == POS_FISHER_DEL else fisher_tmp_list[ 0 ]
                                         )
                                      + '{0},{1}\t{2},{3}'.format(
-                                        data[ POS_DATA2 ][ 'depth' ],
-                                        data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ],
                                         data[ POS_DATA1 ][ 'depth' ],
                                         data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ],
+                                        data[ POS_DATA2 ][ 'depth' ],
+                                        data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ],
                                         )
                                      + '\t{0:.3f}'.format(disease_misrate)
-                                     + '\t{0:.3f}'.format(data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio'])
-                                     + '\t{0:.3f}'.format(normal_tmp / float( data[ POS_DATA1 ][ 'depth' ] ))
+                                     + '\t{0:.3f}'.format(data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio'])
+                                     + '\t{0:.3f}'.format(normal_tmp / float( data[ POS_DATA2 ][ 'depth' ] ))
                                      )
-                            if 's_ratio' in data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ].keys():
-                                outstr += '\t{0:.3f}'.format(data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio' ])
+                            if 's_ratio' in data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ].keys():
+                                outstr += '\t{0:.3f}'.format(data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio' ])
                             else:
                                 outstr += '\t---'
                             outstr += '\t{0:.3f}'.format(float(fisher_value))
@@ -620,7 +640,7 @@ def Pileup_and_count(
         # Open output file and write header
         #
         w = open( out_file, 'w' )
-
+        FNULL = open(os.devnull, 'w')
         #
         # Print header only for testing.
         #
@@ -633,7 +653,7 @@ def Pileup_and_count(
             w.write( header_str )
 
         if in_bam1 and in_bam2:
-            pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ], stdout=subprocess.PIPE)
+            pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ], stdout=subprocess.PIPE, stderr = FNULL)
             end_of_pipe = pileup.stdout
             for mpileup in end_of_pipe:
                 data = Pileup_out( mpileup, w, baseq_thres, min_depth, True)
@@ -642,7 +662,7 @@ def Pileup_and_count(
 
         elif in_bam1 or in_bam2:
             in_bam = in_bam1 if in_bam1 else in_bam2
-            pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ], stdout=subprocess.PIPE)
+            pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ], stdout=subprocess.PIPE, stderr = FNULL)
             end_of_pipe = pileup.stdout
             for mpileup in end_of_pipe:
                 data = Pileup_out( mpileup, w, baseq_thres, min_depth, False )
@@ -653,7 +673,9 @@ def Pileup_and_count(
             logging.error( "Input file: {file} not found.".format( file = args.in_bam1 +" "+ args.in_bam2 ) )
             raise
         
+        FNULL.close()
         w.close()
+
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
