@@ -53,6 +53,7 @@ def main(args):
 #            compare = args.compare,
             print_header = args.print_header,
             mapq_thres = args.mapping_quality,
+            min_variant_read = args.min_variant_read,
             samtools = args.samtools_path
           )
 

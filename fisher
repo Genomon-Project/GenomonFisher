@@ -22,9 +22,10 @@ parser.add_argument( '-q', '--mapping_quality', metavar = 'mapping quality thres
 parser.add_argument( '-Q', '--base_quality', metavar = 'base quality threshold', help = 'Base quality threshold', type = int, default = 15 )
 parser.add_argument( '-m', '--min_allele_freq', metavar = 'minimum amount of disease allele frequency', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
 parser.add_argument( '-n', '--max_allele_freq', metavar = 'maximum amount of control allele frequency', help = 'maximum amount of control allele frequency', type = float, default = 0.1 )
-parser.add_argument( '-p', '--post_10_q', metavar='10% posterior quantile threshold', help = '10% posterior quantile threshold', type = float, default = 0.05 )
+parser.add_argument( '-p', '--post_10_q', metavar='10% posterior quantile threshold', help = '10% posterior quantile threshold', type = float, default = 0.02 )
 parser.add_argument( '-f', '--fisher_value', metavar = 'fisher threshold', help = 'fisher threshold', type = float, default = 0.05 )
 parser.add_argument( '-d', '--min_depth', metavar = 'minimum depth', help = 'Mimimum depth', type = float, default = 10 )
+parser.add_argument( '-v', '--min_variant_read', metavar = 'minimum amount of variant reads [disease]', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
 
 #
 # Log settings
@@ -35,7 +36,7 @@ parser.add_argument( '-l', '--log_level', metavar = "logging level", help = "Log
 #
 # required parameters
 #
-parser.add_argument( '-r', '--ref_fa', metavar = 'reference_FASTA', help = 'Reference FASTA', type = str, default = None , required = True)
+parser.add_argument( '-r', '--ref_fa', metavar = 'reference genome in fasta format', help = 'Reference FASTA', type = str, default = None , required = True)
 parser.add_argument( '-s', '--samtools_path', metavar = 'samtools_path', help = 'Samtools path', type = str, default = None, required = True)
 
 args = parser.parse_args()
