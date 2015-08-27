@@ -20,16 +20,24 @@ python setup.py install
 ## Run
 
 ```
-fisher [-h] [--version] [-1 control.bam] [-2 disease.bam] [-e]
-            [-q mapping quality threshold] [-Q base quality threshold]
-            [-m minimum amount of disease allele frequency]
-            [-n maximum amount of control allele frequency]
-            [-p 10% posterior quantile threshold] [-f fisher threshold]
-            [-d minimum depth]
-            [-v minimum amount of variant reads [disease]]
-            [-g log file name] [-l logging level] -r reference genome in
-            fasta format -s samtools_path
-            output.txt
+fisher comparison [-h] -1 Disease.bam -2 Control.bam -o Output_text
+                  -r Reference_genome_in_fasta_format -s Samtools_path
+                  [-q Mapping_quality_threshold] [-Q Base_quality_threshold]
+                  [-m Minimum_amount_of_disease_allele_frequency]
+                  [-M Maximum_amount_of_control_allele_frequency]
+                  [-f Fisher_thres_hold] [-d Minimum_depth] 
+                  [-v Minimum_variant_read] 
+                  [-e (Print_header)] [-g Log_file] [-l Log_level]
+
+```
+```
+fisher single [-h] -1 target.bam -o Output.text 
+              -r Reference_genome_in_fasta_format -s Samtools_path
+              [-q Mapping_quality_threshold] [-Q Base_quality_threshold]
+              [-m Minimum_amount_of_allele_frequency]
+              [-p 10_percent_posterior_quantile_threshold]
+              [-d Minimum_depth]
+              [-e (Print_header)] [-g Log_file] [-l Log_level]
 
 ```
 
