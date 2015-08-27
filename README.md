@@ -2,7 +2,8 @@
 Genomon fisher exact test mutation caller
 
 ## Dependency
-Python (>= 2.7), pysam
+Python (>= 2.7), pysam, 
+samtools
 
 ## Install
 
@@ -13,12 +14,8 @@ python setup.py build
 python setup.py install
 ```
 
-**target somatic mutation candidats**: the somatic mutation candidates (should be .tsv or .vcf format).  
-**target tumor bam**: the indexed bam file of the target tumor sample.  
-**target normal bam**: the indexed bam file of the target normal sample.  
-
 ## Run
-
+Disease sample vs. Control sample Comparison
 ```
 fisher comparison [-h] -1 Disease.bam -2 Control.bam -o Output_text
                   -r Reference_genome_in_fasta_format -s Samtools_path
@@ -30,6 +27,7 @@ fisher comparison [-h] -1 Disease.bam -2 Control.bam -o Output_text
                   [-e (Print_header)] [-g Log_file] [-l Log_level]
 
 ```
+Single sample mutation calling
 ```
 fisher single [-h] -1 target.bam -o Output.text 
               -r Reference_genome_in_fasta_format -s Samtools_path
