@@ -8,39 +8,67 @@ import argparse
 #
 parser = argparse.ArgumentParser(prog = "fisher")
 parser.add_argument("--version", action = "version", version = "GenomonFisher-0.1.0")
+subparsers = parser.add_subparsers()
 
-#
-# optional parameters
-#
-parser.add_argument( 'output', metavar = 'output.txt', help = 'Output text file', type = str, default = None )
-parser.add_argument( '-1', '--bam1', metavar = 'control.bam', help = '1st bam file ( control )', type = str, default = None )
-parser.add_argument( '-2', '--bam2', metavar = 'disease.bam', help = '2nd bam file ( disease )', type = str, default = None )
-# parser.add_argument( '-i', '--input_mpileup', metavar = 'pileup_format_file', help = 'Input mpileup file', type = str, default = None )
-# parser.add_argument( '-c', '--compare', help = 'Compare two samples', action = 'store_true', default = False )
-parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
-parser.add_argument( '-q', '--mapping_quality', metavar = 'mapping quality threshold', help = 'Mapping quality threshold', type = int, default = 30 )
-parser.add_argument( '-Q', '--base_quality', metavar = 'base quality threshold', help = 'Base quality threshold', type = int, default = 15 )
-parser.add_argument( '-m', '--min_allele_freq', metavar = 'minimum amount of disease allele frequency', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
-parser.add_argument( '-n', '--max_allele_freq', metavar = 'maximum amount of control allele frequency', help = 'maximum amount of control allele frequency', type = float, default = 0.1 )
-parser.add_argument( '-p', '--post_10_q', metavar='10% posterior quantile threshold', help = '10% posterior quantile threshold', type = float, default = 0.02 )
-parser.add_argument( '-f', '--fisher_value', metavar = 'fisher threshold', help = 'fisher threshold', type = float, default = 0.05 )
-parser.add_argument( '-d', '--min_depth', metavar = 'minimum depth', help = 'Mimimum depth', type = float, default = 10 )
-parser.add_argument( '-v', '--min_variant_read', metavar = 'minimum amount of variant reads [disease]', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
+####################
+# compare
+parse_parser = subparsers.add_parser("comparison")
+parse_parser.add_argument( '-1', '--bam1', help = '1st bam file ( disease )', type = str, default = None, required = True )
+parse_parser.add_argument( '-2', '--bam2', help = '2nd bam file ( control )', type = str, default = None, required = True )
+parse_parser.add_argument( '-o', '--output', help = 'Output text file', type = str, default = None, required = True)
+parse_parser.add_argument( '-r', '--ref_fa', help = 'Reference genome in fasta format', type = str, default = None , required = True)
+parse_parser.add_argument( '-s', '--samtools_path', type = str, default = None, required = True)
 
-#
-# Log settings
-#
-parser.add_argument( '-g', '--log_file', metavar = "log file name", help = "Log file name", type = str, default = None )
-parser.add_argument( '-l', '--log_level', metavar = "logging level", help = "Logging level", type = str, default = 'DEBUG' )
+parse_parser.add_argument( '-q', '--mapping_quality', help = 'Mapping quality threshold', type = int, default = 30 )
+parse_parser.add_argument( '-Q', '--base_quality', help = 'Base quality threshold', type = int, default = 15 )
+parse_parser.add_argument( '-m', '--min_allele_freq', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
+parse_parser.add_argument( '-M', '--max_allele_freq', help = 'maximum amount of control allele frequency', type = float, default = 0.1 )
+parse_parser.add_argument( '-f', '--fisher_value', help = 'fisher threshold', type = float, default = 0.05 )
+parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
+parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
 
-#
-# required parameters
-#
-parser.add_argument( '-r', '--ref_fa', metavar = 'reference genome in fasta format', help = 'Reference FASTA', type = str, default = None , required = True)
-parser.add_argument( '-s', '--samtools_path', metavar = 'samtools_path', help = 'Samtools path', type = str, default = None, required = True)
+parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
+parse_parser.add_argument( '-g', '--log_file', help = "Log file name", type = str, default = None )
+parse_parser.add_argument( '-l', '--log_level', help = "Logging level", type = str, default = 'DEBUG' )
 
+parse_parser.set_defaults(func = run_compare)
+
+####################
+# single
+parse_parser = subparsers.add_parser("single")
+parse_parser.add_argument( '-1', '--bam1', help = '1st bam file ', type = str, default = None, required = True )
+parse_parser.add_argument( '-o', '--output', help = 'Output text file', type = str, default = None, required = True)
+parse_parser.add_argument( '-r', '--ref_fa', help = 'Reference genome in fasta format', type = str, default = None , required = True)
+parse_parser.add_argument( '-s', '--samtools_path', type = str, default = None, required = True)
+
+parse_parser.add_argument( '-q', '--mapping_quality', help = 'Mapping quality threshold', type = int, default = 30 )
+parse_parser.add_argument( '-Q', '--base_quality', help = 'Base quality threshold', type = int, default = 15 )
+parse_parser.add_argument( '-m', '--min_allele_freq', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
+parse_parser.add_argument( '-p', '--post_10_q', help = '10 percent posterior quantile threshold', type = float, default = 0.02 )
+parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
+parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
+
+parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
+parse_parser.add_argument( '-g', '--log_file', help = "Log file name", type = str, default = None )
+parse_parser.add_argument( '-l', '--log_level', help = "Logging level", type = str, default = 'DEBUG' )
+
+parse_parser.set_defaults(func = run_single)
+
+####################
+  #
+  # logging setup
+  #
+  # Level     function            value    description
+  # CRITICAL  logging.critical()  50      Output only critical errors
+  # ERROR     logging.error()     40      Output errors
+  # WARNING   logging.warning()   30      Output warnings
+  # INFO      logging.info()      20      Output information
+  # DEBUG     logging.debug()     10      Output debug information
+  # NOTSET                        0       Output all
+  #
+####################
 args = parser.parse_args()
 
-main(args)
+args.func(args)
 
 

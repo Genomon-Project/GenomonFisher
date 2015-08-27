@@ -377,11 +377,7 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
 ############################################################
 def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, posterior_10_quantile, fisher_threshold, min_variant_read ):
     str_indel_dict = AutoVivification()
-    f_print = False
     f_print_indel = False
-    fisher_threshold_log = -math.log( fisher_threshold, 10 )
-
-    outstr = ''
 
     if data[ POS_COUNT ] == 1:
         #
@@ -394,7 +390,6 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
               data[ POS_DATA1 ][ '0.1']           >   posterior_10_quantile and
               data[ POS_DATA1 ][ 'total_' + data[ POS_DATA1 ][ 'mis_base' ] ] >= min_variant_read
         ):
-            f_print = True
             # Genomon output for barcode
             # chr \t start \t end \t ref \t obs \tdepth \t A,C,G,T \t mis \t s_ratio \t 0.1 \t ratio \t 0.9
             outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7},{8},{9},{10}\t{11:.3f}\t{12:.3f}\t{13:.3f}\t{14:.3f}\t{15:.3f}\n'.format(
@@ -416,8 +411,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ POS_DATA1 ][ '0.9' ],
                         )
             ###
-            if len( outstr ) > 0:
-                w.write( outstr)
+            w.write( outstr)
 
         #
         # InDel output
@@ -471,11 +465,11 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                                   str( pos + len( bases ) ) + '\t' + \
                                   str_indel_dict[ type ][ bases ]
                         ###
-                        if len( outstr ) > 0:
-                            w.write( outstr )
+                        w.write( outstr )
 
     elif data[ POS_COUNT ] == 2:
 
+        fisher_threshold_log = -math.log( fisher_threshold, 10 )
         #
         # Fisher
         #
@@ -493,7 +487,6 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             # chr \t start \t end \t ref1 \t obs1 \tdepth1 \t A1 \t C1 \t G1 \t T1 \t mis1 \t s_ratio1
             #                        ref2 \t obs2 \tdepth2 \t A2 \t C2 \t G2 \t T2 \t mis2 \t s_ratio2
             #
-            f_print = True
             ###
             outstr = ('{0}\t{1}\t{2}\t{3}\t{4}'.format(
                         data[ POS_CHR ],
@@ -525,8 +518,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             outstr += '\t{0:.3f}'.format(data[ POS_FISHER_SNV ])
                      
             ###
-            if len( outstr ) > 0:
-                w.write( outstr +"\n")
+            w.write( outstr +"\n")
 
         for data_type in ( POS_FISHER_DEL, POS_FISHER_INS ):
             for indel_data in [ x for x in data[ data_type ].split( ',' ) if x != 'N:1.0' ]:
@@ -545,7 +537,6 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ POS_DATA1 ][ 'proper_read_depth_indel' ] >= min_depth and
                         data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] >= min_variant_read
                        ):
-                        f_print = True
                         fisher_tmp_list = indel_data.split( ':' )
                         if isinstance( data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ], int ):
                             normal_tmp = data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] 
@@ -575,8 +566,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                             outstr += '\t---'
                         outstr += '\t{0:.3f}'.format(float(fisher_value))
                         ###
-                        if len( outstr ) > 0:
-                            w.write( outstr + "\n" )
+                        w.write( outstr + "\n" )
 
 
 ############################################################
@@ -584,7 +574,6 @@ def Pileup_and_count(
         in_bam1,
         in_bam2,
         out_file,
-#        input_mpileup,
         ref_fa,
         baseq_thres,
         mismatch_rate_disease,
@@ -592,7 +581,6 @@ def Pileup_and_count(
         post_10_q,
         fisher_threshold,
         min_depth,
-#        compare,
         print_header,
         mapq_thres,
         min_variant_read,
@@ -625,15 +613,11 @@ def Pileup_and_count(
     #
     # Print header only for testing.
     #
-    if print_header:
-        if compare:
-            header_str = "#chr\tstart\tend\tref\tobs\tA,C,G,T\tA,C,G,T\tdis_mis\tdis_s_ratio\tctrl_mis\tctrl_s_ratio\tfisher\n"
-        else:
-            header_str = "#chr\tstart\tend\tref\tobs\tdepth\tA,C,G,T,\tmis\ts_ratio\t0.1\tratio\t0.9\n"
-
-        w.write( header_str )
 
     if in_bam1 and in_bam2:
+        if print_header:
+            header_str = "#chr\tstart\tend\tref\tobs\tA,C,G,T\tA,C,G,T\tdis_mis\tdis_s_ratio\tctrl_mis\tctrl_s_ratio\tfisher\n"
+            w.write( header_str )
         pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ], stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
         for mpileup in end_of_pipe:
@@ -642,6 +626,9 @@ def Pileup_and_count(
                 print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
 
     elif in_bam1 or in_bam2:
+        if print_header:
+            header_str = "#chr\tstart\tend\tref\tobs\tdepth\tA,C,G,T,\tmis\ts_ratio\t0.1\tratio\t0.9\n"
+            w.write( header_str )
         in_bam = in_bam1 if in_bam1 else in_bam2
         pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ], stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
