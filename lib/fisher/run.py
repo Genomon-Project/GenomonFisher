@@ -36,7 +36,8 @@ def run_compare(args):
             print_header = args.print_header,
             mapq_thres = args.mapping_quality,
             min_variant_read = args.min_variant_read,
-            samtools = args.samtools_path
+            samtools = args.samtools_path,
+            region = args.region
           )
 
 
@@ -70,6 +71,7 @@ def run_single(args):
             print_header = args.print_header,
             mapq_thres = args.mapping_quality,
             min_variant_read = args.min_variant_read,
-            samtools = args.samtools_path
+            samtools = args.samtools_path,
+            region = args.region
           )
 

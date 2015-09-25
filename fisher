@@ -26,6 +26,7 @@ parse_parser.add_argument( '-M', '--max_allele_freq', help = 'maximum amount of 
 parse_parser.add_argument( '-f', '--fisher_value', help = 'fisher threshold', type = float, default = 0.05 )
 parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
 parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
+parse_parser.add_argument( '-R', '--region', help = 'region in which pileup is generated', type = str, default = None )
 
 parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
 parse_parser.add_argument( '-g', '--log_file', help = "Log file name", type = str, default = None )
@@ -47,6 +48,7 @@ parse_parser.add_argument( '-m', '--min_allele_freq', help = 'minimum amount of 
 parse_parser.add_argument( '-p', '--post_10_q', help = '10 percent posterior quantile threshold', type = float, default = 0.02 )
 parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
 parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
+parse_parser.add_argument( '-R', '--region', help = 'region in which pileup is generated', type = str, default = None )
 
 parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
 parse_parser.add_argument( '-g', '--log_file', help = "Log file name", type = str, default = None )

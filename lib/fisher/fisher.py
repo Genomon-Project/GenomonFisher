@@ -584,7 +584,8 @@ def Pileup_and_count(
         print_header,
         mapq_thres,
         min_variant_read,
-        samtools
+        samtools,
+        region
         ):
 
     global target
@@ -618,7 +619,11 @@ def Pileup_and_count(
         if print_header:
             header_str = "#chr\tstart\tend\tref\tobs\tA,C,G,T\tA,C,G,T\tdis_mis\tdis_s_ratio\tctrl_mis\tctrl_s_ratio\tfisher\n"
             w.write( header_str )
-        pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ], stdout=subprocess.PIPE, stderr = FNULL)
+        cmd_list = [samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ]
+        if region:
+            cmd_list.insert(2, '-r')
+            cmd_list.insert(3, region)
+        pileup = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
         for mpileup in end_of_pipe:
             data = Pileup_out( mpileup, w, min_depth, min_variant_read, True)
@@ -630,7 +635,11 @@ def Pileup_and_count(
             header_str = "#chr\tstart\tend\tref\tobs\tdepth\tA,C,G,T,\tmis\ts_ratio\t0.1\tratio\t0.9\n"
             w.write( header_str )
         in_bam = in_bam1 if in_bam1 else in_bam2
-        pileup = subprocess.Popen([samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ], stdout=subprocess.PIPE, stderr = FNULL)
+        cmd_list = [samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ]
+        if region:
+            cmd_list.insert(2, '-r')
+            cmd_list.insert(3, region)
+        pileup = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
         for mpileup in end_of_pipe:
             data = Pileup_out( mpileup, w, min_depth, min_variant_read, False )
