@@ -214,16 +214,22 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
                 "total_G": 0,
                 "total_T": 0,
                 "total_N": 0,
+                "total_R": 0,
+                "total_M": 0,
                 "A": 0,
                 "C": 0,
                 "G": 0,
                 "T": 0,
                 "N": 0,
+                "R": 0,
+                "M": 0,
                 "a": 0,
                 "c": 0,
                 "g": 0,
                 "t": 0,
-                "n": 0
+                "n": 0,
+                "r": 0,
+                "m": 0
             }
 
             #
@@ -236,9 +242,9 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
             # Count number
             #
             for nuc, qual in zip( read_bases, qual_list ):
-                if nuc in 'ATGCNatgcn':
+                if nuc in 'ATGCNRMatgcnrm':
                     data_pair[ data_id ][ 'proper_read_depth_indel' ] += 1 
-                if nuc in 'ATGCNatgcn' and not ( qual in filter_quals) :
+                if nuc in 'ATGCNRMatgcnrm' and not ( qual in filter_quals) :
                     base_num[ nuc ] += 1
                     base_num[ 'total_' + nuc.upper() ] += 1
                 if nuc in 'ATGCatgc' and not ( qual in filter_quals):
@@ -269,7 +275,7 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
             #
             # skip if reference is 'N'
             #
-            if ref_base_U != 'N' and int( data_pair[ data_id ][ 'proper_read_depth' ] ) >= min_depth:
+            if ref_base_U != 'N' and ref_base_U != 'R' and ref_base_U != 'M' and int( data_pair[ data_id ][ 'proper_read_depth' ] ) >= min_depth:
                 ref_num = base_num[ 'total_' + ref_base_U ]
                     
                 mis_num = 0
@@ -603,7 +609,7 @@ def Pileup_and_count(
     # Setup regular expression
     # ([\+\-])[0-9]+[ACGTNacgtn]+
     #
-    target = re.compile( '([\+\-])([0-9]+)([ACGTNacgtn]+)' )
+    target = re.compile( '([\+\-])([0-9]+)([ACGTNRMacgtnrm]+)' )
     remove_chr = re.compile( '\^.' )
 
     #
