@@ -111,6 +111,7 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
     if (int(mp_list[ 3 ]) - ref_base_count + ins_base_count + del_base_count) < min_variant_read:
         return None
 
+    if ref_base_U not in 'ACGTN': return None
     #
     # data_pair IDs
     # POS_CHR = 0
@@ -214,22 +215,16 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
                 "total_G": 0,
                 "total_T": 0,
                 "total_N": 0,
-                "total_R": 0,
-                "total_M": 0,
                 "A": 0,
                 "C": 0,
                 "G": 0,
                 "T": 0,
                 "N": 0,
-                "R": 0,
-                "M": 0,
                 "a": 0,
                 "c": 0,
                 "g": 0,
                 "t": 0,
-                "n": 0,
-                "r": 0,
-                "m": 0
+                "n": 0
             }
 
             #
@@ -242,9 +237,9 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
             # Count number
             #
             for nuc, qual in zip( read_bases, qual_list ):
-                if nuc in 'ATGCNRMatgcnrm':
+                if nuc in 'ATGCNacgtn':
                     data_pair[ data_id ][ 'proper_read_depth_indel' ] += 1 
-                if nuc in 'ATGCNRMatgcnrm' and not ( qual in filter_quals) :
+                if nuc in 'ATGCNacgtn' and not ( qual in filter_quals) :
                     base_num[ nuc ] += 1
                     base_num[ 'total_' + nuc.upper() ] += 1
                 if nuc in 'ATGCatgc' and not ( qual in filter_quals):
@@ -275,7 +270,7 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
             #
             # skip if reference is 'N'
             #
-            if ref_base_U != 'N' and ref_base_U != 'R' and ref_base_U != 'M' and int( data_pair[ data_id ][ 'proper_read_depth' ] ) >= min_depth:
+            if ref_base_U != 'N' and int( data_pair[ data_id ][ 'proper_read_depth' ] ) >= min_depth:
                 ref_num = base_num[ 'total_' + ref_base_U ]
                     
                 mis_num = 0
