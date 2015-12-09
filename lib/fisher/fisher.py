@@ -105,6 +105,9 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
     # if int(mp_list[ 3 ]) < min_depth or ( mp_list_len > 6 and int(mp_list[ 6 ]) < min_depth ):
         return None
 
+    ref_base_plus  = mp_list[ 4 ].count('.')
+    ref_base_minus = mp_list[ 4 ].count(',')
+
     ref_base_count = mp_list[ 4 ].count('.') + mp_list[ 4 ].count(',')
     ins_base_count = mp_list[ 4 ].count('+')
     del_base_count = mp_list[ 4 ].count('-')
@@ -127,8 +130,8 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
     data_pair = [ mp_list[ 0 ],
                   int( mp_list[ 1 ] ),
                   mp_list[ 2 ],
-                  { 'mis_base': ref_base_U, 'mis_rate': 0, 'proper_read_depth': 0, 'proper_read_depth_indel': 0, 'indel': AutoVivification() },
-                  { 'mis_base': ref_base_U, 'mis_rate': 0, 'proper_read_depth': 0, 'proper_read_depth_indel': 0, 'indel': AutoVivification() },
+                  { 'mis_base': ref_base_U, 'mis_rate': 0, 'proper_read_depth': 0, 'proper_read_depth_plus': 0, 'proper_read_depth_minus': 0, 'proper_read_depth_indel': 0, 'proper_read_depth_indel_plus': 0, 'proper_read_depth_indel_minus': 0,'indel': AutoVivification() },
+                  { 'mis_base': ref_base_U, 'mis_rate': 0, 'proper_read_depth': 0, 'proper_read_depth_plus': 0, 'proper_read_depth_minus': 0, 'proper_read_depth_indel': 0, 'proper_read_depth_indel_plus': 0, 'proper_read_depth_indel_minus': 0,'indel': AutoVivification() },
                   1.0,
                   'N:1.0',
                   'N:1.0',
@@ -239,11 +242,19 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
             for nuc, qual in zip( read_bases, qual_list ):
                 if nuc in 'ATGCNacgtn':
                     data_pair[ data_id ][ 'proper_read_depth_indel' ] += 1 
+                if nuc in 'ATGCN':
+                    data_pair[ data_id ][ 'proper_read_depth_indel_plus' ] += 1 
+                if nuc in 'acgtn':
+                    data_pair[ data_id ][ 'proper_read_depth_indel_minus' ] += 1 
                 if nuc in 'ATGCNacgtn' and not ( qual in filter_quals) :
                     base_num[ nuc ] += 1
                     base_num[ 'total_' + nuc.upper() ] += 1
                 if nuc in 'ATGCatgc' and not ( qual in filter_quals):
                     data_pair[ data_id ][ 'proper_read_depth' ] += 1 
+                if nuc in 'ATGC' and not ( qual in filter_quals):
+                    data_pair[ data_id ][ 'proper_read_depth_plus' ] += 1 
+                if nuc in 'atgc' and not ( qual in filter_quals):
+                    data_pair[ data_id ][ 'proper_read_depth_minus' ] += 1 
 
             #
             # InsDel
@@ -393,7 +404,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
         ):
             # Genomon output for barcode
             # chr \t start \t end \t ref \t obs \tdepth \t A,C,G,T \t mis \t s_ratio \t 0.1 \t ratio \t 0.9
-            outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7},{8},{9},{10}\t{11:.3f}\t{12:.3f}\t{13:.3f}\t{14:.3f}\t{15:.3f}\n'.format(
+            # outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7},{8},{9},{10}\t{11:.3f}\t{12:.3f}\t{13:.3f}\t{14:.3f}\t{15:.3f}\n'.format(
+            outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7},{8},{9},{10}\t{11},{12},{13},{14}\t{15:.3f}\t{16:.3f}\t{17:.3f}\t{18:.3f}\t{19:.3f}\n'.format(
                         data[ POS_CHR ],
                         data[ POS_COORD ],
                         data[ POS_COORD ],
@@ -401,6 +413,10 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ POS_DATA1 ][ 'mis_base' ],
                         data[ POS_DATA1 ][ 'proper_read_depth' ],
                         data[ POS_DATA1 ][ 'total_' + data[ POS_DATA1 ][ 'mis_base' ] ],
+                        data[ POS_DATA1 ][ 'proper_read_depth_plus' ],
+                        data[ POS_DATA1 ][ data[ POS_DATA1 ][ 'mis_base' ] ],
+                        data[ POS_DATA1 ][ 'proper_read_depth_minus' ],
+                        data[ POS_DATA1 ][ (data[ POS_DATA1 ][ 'mis_base' ]).lower() ],
                         data[ POS_DATA1 ][ 'total_A' ],
                         data[ POS_DATA1 ][ 'total_C' ],
                         data[ POS_DATA1 ][ 'total_G' ],
@@ -429,13 +445,17 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         ):
 
                             f_print_indel = True
-                            str_indel_dict[ type ][ bases ] = '{0}\t{1}\t{2}\t{3}\t{4},{5}\t{6:.3f}\t{7:.3f}\t{8:.3f}\t{9:.3f}\t{10:.3f}\n'.format(
+                            # str_indel_dict[ type ][ bases ] = '{0}\t{1}\t{2}\t{3}\t{4},{5}\t{6:.3f}\t{7:.3f}\t{8:.3f}\t{9:.3f}\t{10:.3f}\n'.format(
+                            str_indel_dict[ type ][ bases ] = '{0}\t{1}\t{2}\t{3}\t{4},{5},{6},{7}\t{8}\t{9:.3f}\t{10:.3f}\t{11:.3f}\t{12:.3f}\t{13:.3f}\n'.format(
                                         bases if type == '-' else '-',
                                         '-' if type == '-' else bases,
                                         data[ POS_DATA1 ][ 'proper_read_depth_indel' ],
                                         data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ],
-                                        data[ POS_DATA1 ][ 'proper_read_depth_indel' ],
-                                        data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ],
+                                        data[ POS_DATA1 ][ 'proper_read_depth_indel_plus' ],
+                                        data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '+' ],
+                                        data[ POS_DATA1 ][ 'proper_read_depth_indel_minus' ],
+                                        data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '-' ],
+                                        '---',
                                         data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ] / float( data[ POS_DATA1 ][ 'proper_read_depth_indel' ] ),
                                         data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '+' ] / float( data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ] ),
                                         data[ POS_DATA1 ][ 'indel' ][ type ][ bases ][ '0.1' ],
@@ -489,12 +509,28 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             #                        ref2 \t obs2 \tdepth2 \t A2 \t C2 \t G2 \t T2 \t mis2 \t s_ratio2
             #
             ###
-            outstr = ('{0}\t{1}\t{2}\t{3}\t{4}'.format(
+            outstr = ('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}'.format(
                         data[ POS_CHR ],
                         data[ POS_COORD ],
                         data[ POS_COORD ],
                         data[ POS_REF ],
                         data[ POS_DATA1 ][ 'mis_base' ],
+                        data[ POS_DATA1 ][ 'proper_read_depth' ],
+                        data[ POS_DATA1 ][ 'total_' + data[ POS_DATA1 ][ 'mis_base' ] ],
+                        data[ POS_DATA2 ][ 'proper_read_depth' ],
+                        data[ POS_DATA2 ][ 'total_' + data[ POS_DATA1 ][ 'mis_base' ] ],
+                        )
+                     + '\t{0},{1},{2},{3}'.format(
+                        data[ POS_DATA1 ][ 'proper_read_depth_plus' ],
+                        data[ POS_DATA1 ][ data[ POS_DATA1 ][ 'mis_base' ] ],
+                        data[ POS_DATA1 ][ 'proper_read_depth_minus' ],
+                        data[ POS_DATA1 ][ (data[ POS_DATA1 ][ 'mis_base' ]).lower() ],
+                        )
+                     + '\t{0},{1},{2},{3}'.format(
+                        data[ POS_DATA2 ][ 'proper_read_depth_plus' ],
+                        data[ POS_DATA2 ][ data[ POS_DATA1 ][ 'mis_base' ] ],
+                        data[ POS_DATA2 ][ 'proper_read_depth_minus' ],
+                        data[ POS_DATA2 ][ (data[ POS_DATA1 ][ 'mis_base' ]).lower() ],
                         )
                      + '\t{0},{1},{2},{3}'.format(
                         data[ POS_DATA1 ][ 'total_A' ],
@@ -544,18 +580,34 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         else:
                             normal_tmp = 0
                         ###
-                        outstr = ('{0}\t{1}\t{2}\t{3}\t{4}\t'.format(
+                        outstr = ('{0}\t{1}\t{2}\t{3}\t{4}'.format(
                                     data[ POS_CHR ],
                                     data[ POS_COORD ] + 1 if data_type == POS_FISHER_DEL else data[ POS_COORD ],
                                     data[ POS_COORD ] + len( bases ) if data_type == POS_FISHER_DEL else data[ POS_COORD ],
                                     fisher_tmp_list[ 0 ] if data_type == POS_FISHER_DEL else '-',
                                     '-' if data_type == POS_FISHER_DEL else fisher_tmp_list[ 0 ]
                                     )
-                                 + '{0},{1}\t{2},{3}'.format(
+                                 + '\t{0}\t{1}\t{2}\t{3}'.format(
                                     data[ POS_DATA1 ][ 'proper_read_depth_indel' ],
                                     data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ],
                                     data[ POS_DATA2 ][ 'proper_read_depth_indel' ],
                                     data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ],
+                                    )
+                                 + '\t{0},{1},{2},{3}'.format(
+                                    data[ POS_DATA1 ][ 'proper_read_depth_indel_plus' ],
+                                    data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ '+' ],
+                                    data[ POS_DATA1 ][ 'proper_read_depth_indel_minus' ],
+                                    data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ '-' ],
+                                    )
+                                 + '\t{0},{1},{2},{3}'.format(
+                                    data[ POS_DATA2 ][ 'proper_read_depth_indel_plus' ],
+                                    data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ '+' ],
+                                    data[ POS_DATA2 ][ 'proper_read_depth_indel_minus' ],
+                                    data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ '-' ],
+                                    )
+                                 + '\t{0}\t{1}'.format(
+                                    '---',
+                                    '---',
                                     )
                                  + '\t{0:.3f}'.format(disease_misrate)
                                  + '\t{0:.3f}'.format(data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio'])
@@ -618,7 +670,7 @@ def Pileup_and_count(
 
     if in_bam1 and in_bam2:
         if print_header:
-            header_str = "#chr\tstart\tend\tref\tobs\tA,C,G,T\tA,C,G,T\tdis_mis\tdis_s_ratio\tctrl_mis\tctrl_s_ratio\tfisher\n"
+            header_str = "#chr\tstart\tend\tref\talt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA,C,G,T_tumor\tA,C,G,T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\n"
             w.write( header_str )
         cmd_list = [samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ]
         if region:
@@ -633,7 +685,7 @@ def Pileup_and_count(
 
     elif in_bam1 or in_bam2:
         if print_header:
-            header_str = "#chr\tstart\tend\tref\tobs\tdepth\tA,C,G,T,\tmis\ts_ratio\t0.1\tratio\t0.9\n"
+            header_str = "#chr\tstart\tend\tref\talt\tdepth\tvariantNum\tbases\tA,C,G,T\tmisRate\tstrandRatio\t10%_posterior_quantile\tposterior_mean\t90%_posterior_quantile\n"
             w.write( header_str )
         in_bam = in_bam1 if in_bam1 else in_bam2
         cmd_list = [samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ]
