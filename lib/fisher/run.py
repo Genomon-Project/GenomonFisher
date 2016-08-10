@@ -34,9 +34,9 @@ def run_compare(args):
             fisher_threshold = args.fisher_value,
             min_depth = args.min_depth,
             print_header = args.print_header,
-            mapq_thres = args.mapping_quality,
             min_variant_read = args.min_variant_read,
             samtools = args.samtools_path,
+            samtools_params = args.samtools_params,
             region = args.region
           )
 
@@ -69,9 +69,9 @@ def run_single(args):
             fisher_threshold = None,
             min_depth = args.min_depth,
             print_header = args.print_header,
-            mapq_thres = args.mapping_quality,
             min_variant_read = args.min_variant_read,
             samtools = args.samtools_path,
+            samtools_params = args.samtools_params,
             region = args.region
           )
 

@@ -7,7 +7,7 @@ import argparse
 # top level parser
 #
 parser = argparse.ArgumentParser(prog = "fisher")
-parser.add_argument("--version", action = "version", version = "GenomonFisher-0.1.1")
+parser.add_argument("--version", action = "version", version = "GenomonFisher-0.2.0")
 subparsers = parser.add_subparsers()
 
 ####################
@@ -18,8 +18,8 @@ parse_parser.add_argument( '-2', '--bam2', help = '2nd bam file ( control )', ty
 parse_parser.add_argument( '-o', '--output', help = 'Output text file', type = str, default = None, required = True)
 parse_parser.add_argument( '-r', '--ref_fa', help = 'Reference genome in fasta format', type = str, default = None , required = True)
 parse_parser.add_argument( '-s', '--samtools_path', type = str, default = None, required = True)
+parse_parser.add_argument( '-S', '--samtools_params', type = str, default = "-q 30 -BQ0 -d 10000000")
 
-parse_parser.add_argument( '-q', '--mapping_quality', help = 'Mapping quality threshold', type = int, default = 30 )
 parse_parser.add_argument( '-Q', '--base_quality', help = 'Base quality threshold', type = int, default = 15 )
 parse_parser.add_argument( '-m', '--min_allele_freq', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
 parse_parser.add_argument( '-M', '--max_allele_freq', help = 'maximum amount of control allele frequency', type = float, default = 0.1 )
@@ -41,8 +41,8 @@ parse_parser.add_argument( '-1', '--bam1', help = '1st bam file ', type = str, d
 parse_parser.add_argument( '-o', '--output', help = 'Output text file', type = str, default = None, required = True)
 parse_parser.add_argument( '-r', '--ref_fa', help = 'Reference genome in fasta format', type = str, default = None , required = True)
 parse_parser.add_argument( '-s', '--samtools_path', type = str, default = None, required = True)
+parse_parser.add_argument( '-S', '--samtools_params', type = str, default = "-q 30 -BQ0 -d 10000000")
 
-parse_parser.add_argument( '-q', '--mapping_quality', help = 'Mapping quality threshold', type = int, default = 30 )
 parse_parser.add_argument( '-Q', '--base_quality', help = 'Base quality threshold', type = int, default = 15 )
 parse_parser.add_argument( '-m', '--min_allele_freq', help = 'minimum amount of disease allele frequency', type = float, default = 0.07 )
 parse_parser.add_argument( '-p', '--post_10_q', help = '10 percent posterior quantile threshold', type = float, default = 0.02 )

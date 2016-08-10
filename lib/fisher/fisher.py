@@ -635,9 +635,9 @@ def Pileup_and_count(
         fisher_threshold,
         min_depth,
         print_header,
-        mapq_thres,
         min_variant_read,
         samtools,
+        samtools_params,
         region
         ):
 
@@ -659,6 +659,8 @@ def Pileup_and_count(
     target = re.compile( '([\+\-])([0-9]+)([ACGTNRMacgtnrm]+)' )
     remove_chr = re.compile( '\^.' )
 
+    samtools_params_list = samtools_params.split(" ")
+
     #
     # Open output file and write header
     #
@@ -672,10 +674,13 @@ def Pileup_and_count(
         if print_header:
             header_str = "#chr\tstart\tend\tref\talt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA,C,G,T_tumor\tA,C,G,T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\n"
             w.write( header_str )
-        cmd_list = [samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam1, in_bam2 ]
+        cmd_list = [samtools,'mpileup','-f',ref_fa]
+        cmd_list.extend(samtools_params_list)
+        cmd_list.extend([in_bam1, in_bam2])
         if region:
             cmd_list.insert(2, '-r')
             cmd_list.insert(3, region)
+        print cmd_list
         pileup = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
         for mpileup in end_of_pipe:
@@ -688,7 +693,9 @@ def Pileup_and_count(
             header_str = "#chr\tstart\tend\tref\talt\tdepth\tvariantNum\tbases\tA,C,G,T\tmisRate\tstrandRatio\t10%_posterior_quantile\tposterior_mean\t90%_posterior_quantile\n"
             w.write( header_str )
         in_bam = in_bam1 if in_bam1 else in_bam2
-        cmd_list = [samtools,'mpileup','-q',str(mapq_thres),'-BQ','0','-d','10000000','-f',ref_fa, in_bam ]
+        cmd_list = [samtools,'mpileup','-f',ref_fa]
+        cmd_list.extend(samtools_params_list)
+        cmd_list.extend([in_bam])
         if region:
             cmd_list.insert(2, '-r')
             cmd_list.insert(3, region)
