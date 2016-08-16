@@ -680,7 +680,6 @@ def Pileup_and_count(
         if region:
             cmd_list.insert(2, '-r')
             cmd_list.insert(3, region)
-        print cmd_list
         pileup = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr = FNULL)
         end_of_pipe = pileup.stdout
         for mpileup in end_of_pipe:
