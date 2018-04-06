@@ -566,14 +566,12 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                     # chr \t start \t end \t ref1 \t obs1 \tdepth1 \t obs_depth \t ratio \t 
                     #
                     data_type_symbol = '-' if data_type == POS_FISHER_DEL else '+'
-                    normal_misrate = data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA2 ][ 'proper_read_depth_indel' ] )
-                    disease_misrate = data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA1 ][ 'proper_read_depth_indel' ] )
-                    if (normal_misrate < mismatch_rate_normal and
-                        disease_misrate > mismatch_rate_disease and
-                        data[ POS_DATA2 ][ 'proper_read_depth_indel' ] >= min_depth and
+                    if (data[ POS_DATA2 ][ 'proper_read_depth_indel' ] >= min_depth and
                         data[ POS_DATA1 ][ 'proper_read_depth_indel' ] >= min_depth and
+                        (data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA2 ][ 'proper_read_depth_indel' ] )) < mismatch_rate_normal and
+                        (data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA1 ][ 'proper_read_depth_indel' ] )) > mismatch_rate_disease and
                         data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] >= min_variant_read
-                       ):
+                    ):
                         fisher_tmp_list = indel_data.split( ':' )
                         if isinstance( data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ], int ):
                             normal_tmp = data[ POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] 
@@ -609,7 +607,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                                     '---',
                                     '---',
                                     )
-                                 + '\t{0:.3f}'.format(disease_misrate)
+                                 + '\t{0:.3f}'.format(data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ POS_DATA1 ][ 'proper_read_depth_indel' ] ))
                                  + '\t{0:.3f}'.format(data[ POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio'])
                                  + '\t{0:.3f}'.format(normal_tmp / float( data[ POS_DATA2 ][ 'depth' ] ))
                                  )
