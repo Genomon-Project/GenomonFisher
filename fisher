@@ -7,7 +7,7 @@ import argparse
 # top level parser
 #
 parser = argparse.ArgumentParser(prog = "fisher")
-parser.add_argument("--version", action = "version", version = "GenomonFisher-0.2.1")
+parser.add_argument("--version", action = "version", version = "GenomonFisher-0.3.0")
 subparsers = parser.add_subparsers()
 
 ####################
@@ -27,6 +27,8 @@ parse_parser.add_argument( '-f', '--fisher_value', help = 'fisher threshold', ty
 parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
 parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
 parse_parser.add_argument( '-R', '--region', help = 'region in which pileup is generated', type = str, default = None )
+parse_parser.add_argument( '-p', '--semaphore', help = 'the value of semaphore', type = int, default = 1 )
+parse_parser.add_argument( '-i', '--interval_list', help = 'the file path of the interval list', type = str, default = "" )
 
 parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
 parse_parser.add_argument( '-g', '--log_file', help = "Log file name", type = str, default = None )

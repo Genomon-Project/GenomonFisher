@@ -632,7 +632,6 @@ def Pileup_and_count(
         post_10_q,
         fisher_threshold,
         min_depth,
-        print_header,
         min_variant_read,
         samtools,
         samtools_params,
@@ -669,9 +668,6 @@ def Pileup_and_count(
     #
 
     if in_bam1 and in_bam2:
-        if print_header:
-            header_str = "#chr\tstart\tend\tref\talt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA,C,G,T_tumor\tA,C,G,T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\n"
-            w.write( header_str )
         cmd_list = [samtools,'mpileup','-f',ref_fa]
         cmd_list.extend(samtools_params_list)
         cmd_list.extend([in_bam1, in_bam2])
@@ -686,9 +682,6 @@ def Pileup_and_count(
                 print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
 
     elif in_bam1 or in_bam2:
-        if print_header:
-            header_str = "#chr\tstart\tend\tref\talt\tdepth\tvariantNum\tbases\tA,C,G,T\tmisRate\tstrandRatio\t10%_posterior_quantile\tposterior_mean\t90%_posterior_quantile\n"
-            w.write( header_str )
         in_bam = in_bam1 if in_bam1 else in_bam2
         cmd_list = [samtools,'mpileup','-f',ref_fa]
         cmd_list.extend(samtools_params_list)
