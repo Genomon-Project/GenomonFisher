@@ -367,6 +367,8 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
 def Pileup_and_count(
         in_bam1,
         in_bam2,
+        sample1,
+        sample2,
         out_file,
         ref_fa,
         baseq_thres,
@@ -410,9 +412,9 @@ def Pileup_and_count(
     #
     # Print header only for testing.
     #
-    if not is_anno:
+    if not is_anno and print_header:
         ref_name, ext = os.path.splitext(ref_fa)
-        print_vcf.print_meta(w, ref_name + ".dict")
+        print_vcf.print_meta(w, ref_name + ".dict", sample1, sample2, in_bam1, in_bam2, ref_fa)
 
     if in_bam1 and in_bam2:
         if print_header:
@@ -420,7 +422,7 @@ def Pileup_and_count(
             if is_anno:
                 print_anno.print_header_pair(w)
             else:
-                print_vcf.print_header_pair(w, in_bam1, in_bam2)
+                print_vcf.print_header_pair(w, sample1, sample2)
         cmd_list = [samtools,'mpileup','-f',ref_fa]
         cmd_list.extend(samtools_params_list)
         cmd_list.extend([in_bam1, in_bam2])
@@ -444,7 +446,7 @@ def Pileup_and_count(
             if is_anno:
                 print_anno.print_header_single(w)
             else:
-                print_vcf.print_header_single(w, in_bam)
+                print_vcf.print_header_single(w, sample1)
         cmd_list = [samtools,'mpileup','-f',ref_fa]
         cmd_list.extend(samtools_params_list)
         cmd_list.extend([in_bam])

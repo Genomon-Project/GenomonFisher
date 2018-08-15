@@ -21,12 +21,18 @@ def run_compare(args):
                              datefmt    ='%m/%d/%Y %I:%M:%S%p' )
 
     is_anno = True if args.print_format == 'anno' else False
+    if not is_anno:
+        if args.sample1 == None or args.sample2 == None:
+            raise ValueError('--sample1 and --sample2 are required for vcf.') 
+
     #
     # Main function
     #
     fisher.Pileup_and_count(
             in_bam1 = args.bam1,
             in_bam2 = args.bam2,
+            sample1 = args.sample1,
+            sample2 = args.sample2,
             out_file = args.output,
             ref_fa = args.ref_fa,
             baseq_thres = args.base_quality,
@@ -59,12 +65,18 @@ def run_single(args):
                              datefmt    ='%m/%d/%Y %I:%M:%S%p' )
 
     is_anno = True if args.print_format == 'anno' else False
+    if not is_anno:
+        if args.sample1 == None:
+            raise ValueError('--sample1 is required for vcf.') 
+
     #
     # Main function
     #
     fisher.Pileup_and_count(
             in_bam1 = args.bam1,
             in_bam2 = None,
+            sample1 = args.sample1,
+            sample2 = None,
             out_file = args.output,
             ref_fa = args.ref_fa,
             baseq_thres = args.base_quality,

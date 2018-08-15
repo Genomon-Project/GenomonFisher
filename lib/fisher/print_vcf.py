@@ -216,8 +216,33 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         w.write( outstr + "\n" )
 
 ############################################################
-def print_meta(w, ref_dict):
+def print_meta(w, ref_dict,sample1,sample2,bam1,bam2,ref_fa):
+
+    # print format
     w.write('##fileformat=VCFv4.2\n')
+
+    # print info and format
+    if sample2 != None:
+        w.write('##INFO=<ID=FP,Number=1,Type=Float,Description="Minus logarithm of the p-value by Fishers exact test">\n')
+    else:
+        w.write('##INFO=<ID=B10,Number=1,Type=Float,Description="10% posterior quantile of the beta distribution">\n')
+        w.write('##INFO=<ID=BM,Number=1,Type=Float,Description="Posterior mean">\n')
+        w.write('##INFO=<ID=B90,Number=1,Type=Float,Description="90% posterior quantile of the beta distribution">\n')
+    w.write('##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">\n')
+    w.write('##FORMAT=<ID=DPF,Number=1,Type=Integer,Description="Read depth in the forward strand">\n')
+    w.write('##FORMAT=<ID=DPR,Number=1,Type=Integer,Description="Read depth in the reverse strand">\n')
+    w.write('##FORMAT=<ID=AD,Number=1,Type=Integer,Description="Allelic depth">\n')
+    w.write('##FORMAT=<ID=ADF,Number=1,Type=Integer,Description="Allelic depth in the forward strand">\n')
+    w.write('##FORMAT=<ID=ADR,Number=1,Type=Integer,Description="Allelic depth in the reverse strand">\n')
+    w.write('##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">\n')
+    w.write('##FORMAT=<ID=SB,Number=1,Type=Float,Description="Strand bias">\n')
+
+    # print sample information
+    # w.write('##SAMPLE=<ID='+sample1+',SampleName='+sample1+',File='+bam1+'\n')
+    # if sample2 != None:
+    #     w.write('##SAMPLE=<ID='+sample2+',SampleName='+sample2+',File='+bam2+'\n')
+
+    # print reference information
     hIN = open(ref_dict)
     for line in hIN:
         F = line.rstrip('\n').split('\t')
@@ -225,23 +250,12 @@ def print_meta(w, ref_dict):
             ID = F[1].replace('SN:','')
             length = F[2].replace('LN:','')
             w.write('##contig=<ID='+ID+',length='+length+'>\n')
-    w.write('##INFO=<ID=FP,Number=1,Type=Float,Description="Minus logarithm of the p-value by Fishers exact test">\n')
-    w.write('##INFO=<ID=B10,Number=1,Type=Float,Description="10% posterior quantail of the beta distribution">\n')
-    w.write('##INFO=<ID=BM,Number=1,Type=Float,Description="Posterior mean">\n')
-    w.write('##INFO=<ID=B90,Number=1,Type=Float,Description="90% posterior quantail of the beta distribution">\n')
-    w.write('##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">\n')
-    w.write('##FORMAT=<ID=DPF,Number=1,Type=Integer,Description="Read depth on the forward strand">\n')
-    w.write('##FORMAT=<ID=DPR,Number=1,Type=Integer,Description="Read depth on the reverse strand">\n')
-    w.write('##FORMAT=<ID=AD,Number=1,Type=Integer,Description="Allelic depth">\n')
-    w.write('##FORMAT=<ID=ADF,Number=1,Type=Integer,Description="Allelic depth on the forward strand">\n')
-    w.write('##FORMAT=<ID=ADR,Number=1,Type=Integer,Description="Allelic depth on the reverse strand">\n')
-    w.write('##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">\n')
-    w.write('##FORMAT=<ID=SB,Number=1,Type=Float,Description="Strand bias">\n')
+    w.write('##reference='+ref_fa+'\n')
 
 ############################################################
-def print_header_pair(w, in_bam1, in_bam2):
-    w.write("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+in_bam1+"\t"+in_bam2+"\n")
+def print_header_pair(w, sample1, sample2):
+    w.write("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+sample1+"\t"+sample2+"\n")
 
-def print_header_single(w, bam_name):
-    w.write("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+bam_name+"\n")
+def print_header_single(w, sample):
+    w.write("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t"+sample+"\n")
 
