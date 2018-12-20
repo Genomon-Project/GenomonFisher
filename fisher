@@ -7,7 +7,7 @@ import argparse
 # top level parser
 #
 parser = argparse.ArgumentParser(prog = "fisher")
-parser.add_argument("--version", action = "version", version = "GenomonFisher-0.4.0")
+parser.add_argument("--version", action = "version", version = "GenomonFisher-0.4.1")
 subparsers = parser.add_subparsers()
 
 ####################
@@ -28,7 +28,8 @@ parse_parser.add_argument( '-M', '--max_allele_freq', help = 'maximum amount of 
 parse_parser.add_argument( '-f', '--fisher_value', help = 'fisher threshold', type = float, default = 0.05 )
 parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
 parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
-parse_parser.add_argument( '-R', '--region', help = 'region in which pileup is generated', type = str, default = None )
+parse_parser.add_argument( '-R', '--region', help = 'Region in which pileup is generated', type = str, default = None )
+parse_parser.add_argument( '-L', '--regions', help = 'The file path of list regions in which pileup is generated', type = str, default = None )
 
 parse_parser.add_argument( '-O', '--print_format', choices = ['vcf','anno'], help = 'Print VCF or anno(TSV) format',  default = 'anno' )
 parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
@@ -53,6 +54,7 @@ parse_parser.add_argument( '-p', '--post_10_q', help = '10 percent posterior qua
 parse_parser.add_argument( '-d', '--min_depth', help = 'Mimimum depth', type = float, default = 10 )
 parse_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
 parse_parser.add_argument( '-R', '--region', help = 'region in which pileup is generated', type = str, default = None )
+parse_parser.add_argument( '-L', '--regions', help = 'The file path of list regions in which pileup is generated', type = str, default = None )
 
 parse_parser.add_argument( '-O', '--print_format', choices = ['vcf','anno'], help = 'Print VCF or anno(TSV) format',  default = 'anno' )
 parse_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )

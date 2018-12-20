@@ -41,11 +41,12 @@ def run_compare(args):
             post_10_q = None,
             fisher_threshold = args.fisher_value,
             min_depth = args.min_depth,
-            print_header = args.print_header,
+            header_flag = args.print_header,
             min_variant_read = args.min_variant_read,
             samtools = args.samtools_path,
             samtools_params = args.samtools_params,
             region = args.region,
+            region_file = args.regions,
             is_anno = is_anno
           )
 
@@ -85,10 +86,11 @@ def run_single(args):
             post_10_q = args.post_10_q,
             fisher_threshold = None,
             min_depth = args.min_depth,
-            print_header = args.print_header,
+            header_flag = args.print_header,
             min_variant_read = args.min_variant_read,
             samtools = args.samtools_path,
             samtools_params = args.samtools_params,
             region = args.region,
+            region_file = args.regions,
             is_anno = is_anno
           )

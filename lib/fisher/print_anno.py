@@ -250,8 +250,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
 
 ############################################################
 def print_header_pair(w):
-    w.write("#chr\tstart\tend\tref\talt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA,C,G,T_tumor\tA,C,G,T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\n")
+    w.write("Chr\tStart\tEnd\tRef\tAlt\tdepth_tumor\tvariantNum_tumor\tdepth_normal\tvariantNum_normal\tbases_tumor\tbases_normal\tA_C_G_T_tumor\tA_C_G_T_normal\tmisRate_tumor\tstrandRatio_tumor\tmisRate_normal\tstrandRatio_normal\tP-value(fisher)\n")
 
 def print_header_single(w):
-    w.write("#chr\tstart\tend\tref\talt\tdepth\tvariantNum\tbases\tA,C,G,T\tmisRate\tstrandRatio\t10%_posterior_quantile\tposterior_mean\t90%_posterior_quantile\n")
+    w.write("Chr\tStart\tEnd\tRef\tAlt\tdepth\tvariantNum\tbases\tA_C_G_T\tmisRate\tstrandRatio\t10%_posterior_quantile\tposterior_mean\t90%_posterior_quantile\n")
 

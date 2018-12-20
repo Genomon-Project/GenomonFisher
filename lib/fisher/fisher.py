@@ -19,6 +19,8 @@ import print_vcf
 import print_anno
 import util
 import const
+import multiprocessing 
+import copy
 
 #
 # Globals
@@ -364,6 +366,120 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
 
 
 ############################################################
+def Pileup_command(
+        FNULL,
+        regions,
+        cmd_list,
+        min_depth,
+        min_variant_read,
+        mismatch_rate_disease,
+        mismatch_rate_normal,
+        post_10_q,
+        fisher_threshold,
+        is_anno,
+        out_file,
+        compare_flag,
+        w
+        ):
+
+
+    end_idx = 1
+    if regions:
+        region_list = regions.split(",")   
+        end_idx =len(region_list)
+
+    for idx in range(end_idx):
+
+        cmd_list_copy = []
+        cmd_list_copy = copy.deepcopy(cmd_list)
+        if regions:
+            cmd_list_copy.insert(2, '-r')
+            cmd_list_copy.insert(3, region_list[idx])
+
+        pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE, stderr = FNULL)
+        end_of_pipe = pileup.stdout
+        for mpileup in end_of_pipe:
+            data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
+            if data:
+                if is_anno:
+                    print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+                else:
+                    print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+
+
+############################################################
+def Pileup_command_multi_thread(
+        FNULL,
+        regions,
+        cmd_list,
+        min_depth,
+        min_variant_read,
+        mismatch_rate_disease,
+        mismatch_rate_normal,
+        post_10_q,
+        fisher_threshold,
+        is_anno,
+        out_file,
+        thread_str,
+        compare_flag
+        ):
+
+    with open(out_file + thread_str, 'w') as w:
+
+        region_list = regions.split(",")   
+        for idx,target_region in enumerate(region_list):
+
+            cmd_list_copy = []
+            cmd_list_copy = copy.deepcopy(cmd_list)
+            if target_region:
+                cmd_list_copy.insert(2, '-r')
+                cmd_list_copy.insert(3, target_region)
+
+            pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE, stderr = FNULL)
+            end_of_pipe = pileup.stdout
+            for mpileup in end_of_pipe:
+                data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
+                if data:
+                    if is_anno:
+                        print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+                    else:
+                        print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+
+
+############################################################
+def Print_header(
+        w,
+        in_bam1,
+        in_bam2,
+        sample1,
+        sample2,
+        ref_fa,
+        is_anno
+        ):
+
+    #
+    # Print metadata only for VCF.
+    #
+    if not is_anno:
+        ref_name, ext = os.path.splitext(ref_fa)
+        print_vcf.print_meta(w, ref_name + ".dict", sample1, sample2, in_bam1, in_bam2, ref_fa)
+
+    # 
+    # Print header
+    #
+    if in_bam1 and in_bam2:
+        if is_anno:
+            print_anno.print_header_pair(w)
+        else:
+            print_vcf.print_header_pair(w, sample1, sample2)
+
+    elif in_bam1:
+        if is_anno:
+            print_anno.print_header_single(w)
+        else:
+            print_vcf.print_header_single(w, sample1)
+
+############################################################
 def Pileup_and_count(
         in_bam1,
         in_bam2,
@@ -377,11 +493,12 @@ def Pileup_and_count(
         post_10_q,
         fisher_threshold,
         min_depth,
-        print_header,
+        header_flag,
         min_variant_read,
         samtools,
         samtools_params,
         region,
+        region_file,
         is_anno
         ):
     global target
@@ -407,65 +524,66 @@ def Pileup_and_count(
     #
     # Open output file and write header
     #
-    w = open( out_file, 'w' )
     FNULL = open(os.devnull, 'w')
-    #
-    # Print header only for testing.
-    #
-    if not is_anno and print_header:
-        ref_name, ext = os.path.splitext(ref_fa)
-        print_vcf.print_meta(w, ref_name + ".dict", sample1, sample2, in_bam1, in_bam2, ref_fa)
+
+    region_list = []
+    if region_file:
+        with open(region_file, 'r') as hin:
+            for line in hin:
+                region_list.append(line.rstrip('\n'))
 
     if in_bam1 and in_bam2:
-        if print_header:
-            header_str = ""
-            if is_anno:
-                print_anno.print_header_pair(w)
-            else:
-                print_vcf.print_header_pair(w, sample1, sample2)
         cmd_list = [samtools,'mpileup','-f',ref_fa]
         cmd_list.extend(samtools_params_list)
         cmd_list.extend([in_bam1, in_bam2])
-        if region:
-            cmd_list.insert(2, '-r')
-            cmd_list.insert(3, region)
-        pileup = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr = FNULL)
-        end_of_pipe = pileup.stdout
-        for mpileup in end_of_pipe:
-            data = Pileup_out( mpileup, w, min_depth, min_variant_read, True)
-            if data:
-                if is_anno:
-                    print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
-                else:
-                    print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
-
+        compare_flag = True
+   
     elif in_bam1 or in_bam2:
-        in_bam = in_bam1 if in_bam1 else in_bam2
-        if print_header:
-            header_str = ""
-            if is_anno:
-                print_anno.print_header_single(w)
-            else:
-                print_vcf.print_header_single(w, sample1)
+        in_bam1 = in_bam1 if in_bam1 else in_bam2
+        sample1 = sample1 if sample1 else sample2
+        in_bam2 = None
+        sample2 = None
         cmd_list = [samtools,'mpileup','-f',ref_fa]
         cmd_list.extend(samtools_params_list)
-        cmd_list.extend([in_bam])
-        if region:
-            cmd_list.insert(2, '-r')
-            cmd_list.insert(3, region)
-        pileup = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr = FNULL)
-        end_of_pipe = pileup.stdout
-        for mpileup in end_of_pipe:
-            data = Pileup_out( mpileup, w, min_depth, min_variant_read, False )
-            if data:
-                if is_anno:
-                    print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
-                else:
-                    print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+        cmd_list.extend([in_bam1])
+        compare_flag = False
 
     else:
         logging.error( "Input file: {file} not found.".format( file = args.in_bam1 +" "+ args.in_bam2 ) )
         raise
 
+    #
+    # multi thread
+    # 
+    if len(region_list) > 0:
+        jobs = []
+        for idx, target_regions in enumerate(region_list):
+            proc = multiprocessing.Process(target = Pileup_command_multi_thread, \
+                args = (FNULL, target_regions, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, "."+str(idx), compare_flag))
+            jobs.append(proc)
+            proc.start()
+
+        for idx,target_regions in enumerate(region_list):
+            jobs[idx].join()
+
+        with open(out_file, 'w') as w:
+            for idx,target_regions in enumerate(region_list):
+                with open(out_file +"."+ str(idx), 'r') as hin:
+                    if header_flag:
+                        Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
+                    for line in hin:
+                        print >> w, line.rstrip('\n') 
+
+        for idx, target_regions in enumerate(region_list):
+            os.remove(out_file +"."+ str(idx))
+                
+    #
+    # single thread
+    # 
+    else:
+        with open(out_file, 'w') as w:
+            if header_flag:
+                Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
+            Pileup_command(FNULL, region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, w)
+            
     FNULL.close()
-    w.close()
