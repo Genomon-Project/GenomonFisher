@@ -567,10 +567,10 @@ def Pileup_and_count(
             jobs[idx].join()
 
         with open(out_file, 'w') as w:
+            if header_flag:
+                Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
             for idx,target_regions in enumerate(region_list):
                 with open(out_file +"."+ str(idx), 'r') as hin:
-                    if header_flag:
-                        Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
                     for line in hin:
                         print >> w, line.rstrip('\n') 
 
