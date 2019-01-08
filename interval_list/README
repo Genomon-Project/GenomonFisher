@@ -1,0 +1,18 @@
+
+# Get gap.txt
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/gap.txt.gz
+
+# Convert to bed format
+No Script
+
+# Merge Bed
+bedtools merge -i gap.bed > gap.merge.bed
+
+# Make interval list
+# Usage:
+#    argv[1] number of lines to output
+#    argv[2] gap.merge.bed
+#    argv[3] sequence dictionary file
+#    argv[4] temp file
+python make_interval_list.py  8 /home/ec2-user/environment/database/gap.merge.bed /home/ec2-user/environment/mutfilt_test/GRCh37.dict ./GRCh37.interval_list > GRCh37.8.interval_list
+

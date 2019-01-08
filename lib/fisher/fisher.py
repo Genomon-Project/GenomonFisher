@@ -566,16 +566,25 @@ def Pileup_and_count(
         for idx,target_regions in enumerate(region_list):
             jobs[idx].join()
 
-        with open(out_file, 'w') as w:
-            if header_flag:
-                Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
+        with open(out_file + ".unsorted", 'w') as w:
             for idx,target_regions in enumerate(region_list):
                 with open(out_file +"."+ str(idx), 'r') as hin:
                     for line in hin:
                         print >> w, line.rstrip('\n') 
+         
+        subprocess.check_output(["sort", "-k1,1", "-k2,2n", "-k3,3n", "-V", "-o", out_file+".sorted", out_file+".unsorted"])
+
+        with open(out_file, 'w') as w:
+            if header_flag:
+                Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
+            with open(out_file +".sorted", 'r') as hin:
+                for line in hin:
+                    print >> w, line.rstrip('\n') 
 
         for idx, target_regions in enumerate(region_list):
             os.remove(out_file +"."+ str(idx))
+        os.remove(out_file +".sorted")
+        os.remove(out_file +".unsorted")
                 
     #
     # single thread
