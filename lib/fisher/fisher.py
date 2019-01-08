@@ -572,7 +572,7 @@ def Pileup_and_count(
                     for line in hin:
                         print >> w, line.rstrip('\n') 
          
-        subprocess.check_output(["sort", "-k1,1", "-k2,2n", "-k3,3n", "-V", "-o", out_file+".sorted", out_file+".unsorted"])
+        subprocess.check_output(["sort", "-k1,1", "-k2,2n", "-V", "-o", out_file+".sorted", out_file+".unsorted"])
 
         with open(out_file, 'w') as w:
             if header_flag:
