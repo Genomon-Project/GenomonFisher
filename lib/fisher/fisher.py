@@ -5,6 +5,7 @@ fisher.py
 
 
 """
+from __future__ import print_function 
 import sys
 import os
 import re
@@ -15,12 +16,13 @@ import argparse
 import logging
 import math
 import subprocess
-import print_vcf
-import print_anno
-import util
-import const
+from . import print_vcf
+from . import print_anno
+from . import util
+from . import const
 import multiprocessing 
 import copy
+from builtins import chr, str
 
 #
 # Globals
@@ -72,11 +74,14 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
     #
     # Prepare mpileup data
     #
-    mp_list = str( mpileup.translate( None, '\n' ) ).split( '\t' )
+    # mp_list = str( mpileup.translate( None, '\n' ) ).split( '\t' )
+    if sys.version_info.major == 3:
+        mp_list = mpileup.decode().strip('\n').split( '\t' )
+    else:
+        mp_list = mpileup.strip('\n').split( '\t' )
     mp_list_len = len( mp_list )
     ref_base_U = mp_list[ 2 ].upper()
     coordinate = mp_list[ 0:3 ]
-
     #
     # skip if depth is 0
     #
@@ -173,7 +178,7 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
         # Remove '^.' and '$'
         #
         read_bases = remove_chr.sub( '', read_bases )
-        read_bases = read_bases.translate( None, '$' )
+        read_bases = read_bases.replace( '$', '' )
 
         #
         # Error check
@@ -367,7 +372,6 @@ def Pileup_out( mpileup, w, min_depth, min_variant_read, compare ):
 
 ############################################################
 def Pileup_command(
-        FNULL,
         regions,
         cmd_list,
         min_depth,
@@ -388,28 +392,29 @@ def Pileup_command(
         region_list = regions.split(",")   
         end_idx =len(region_list)
 
-    for idx in range(end_idx):
+    with open(os.devnull, 'w') as FNULL:
+    
+        for idx in range(end_idx):
 
-        cmd_list_copy = []
-        cmd_list_copy = copy.deepcopy(cmd_list)
-        if regions:
-            cmd_list_copy.insert(2, '-r')
-            cmd_list_copy.insert(3, region_list[idx])
+            cmd_list_copy = []
+            cmd_list_copy = copy.deepcopy(cmd_list)
+            if regions:
+                cmd_list_copy.insert(2, '-r')
+                cmd_list_copy.insert(3, region_list[idx])
 
-        pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE, stderr = FNULL)
-        end_of_pipe = pileup.stdout
-        for mpileup in end_of_pipe:
-            data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
-            if data:
-                if is_anno:
-                    print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
-                else:
-                    print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
-
+            pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE)
+            for mpileup in pileup.stdout:
+                data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
+                if data:
+                    if is_anno:
+                        print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+                    else:
+                        print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
+            pileup.stdout.close()  
+            pileup.wait()
 
 ############################################################
 def Pileup_command_multi_thread(
-        FNULL,
         regions,
         cmd_list,
         min_depth,
@@ -424,8 +429,8 @@ def Pileup_command_multi_thread(
         compare_flag
         ):
 
-    with open(out_file + thread_str, 'w') as w:
-
+    with open(out_file + thread_str, 'w') as w, open(os.devnull, 'w') as FNULL:
+        
         region_list = regions.split(",")   
         for idx,target_region in enumerate(region_list):
 
@@ -435,17 +440,18 @@ def Pileup_command_multi_thread(
                 cmd_list_copy.insert(2, '-r')
                 cmd_list_copy.insert(3, target_region)
 
-            pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE, stderr = FNULL)
-            end_of_pipe = pileup.stdout
-            for mpileup in end_of_pipe:
+            pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE)
+            for mpileup in pileup.stdout:
                 data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
                 if data:
                     if is_anno:
                         print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
                     else:
                         print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read )
-
-
+            pileup.stdout.close()
+            pileup.wait()
+            
+            
 ############################################################
 def Print_header(
         w,
@@ -510,7 +516,7 @@ def Pileup_and_count(
     #
     filter_quals = ''
     for qual in range( 33, 33 + baseq_thres ):
-        filter_quals += str( unichr( qual ) )
+        filter_quals += str( chr( qual ) )
 
     #
     # Setup regular expression
@@ -520,11 +526,6 @@ def Pileup_and_count(
     remove_chr = re.compile( '\^.' )
 
     samtools_params_list = samtools_params.split(" ")
-
-    #
-    # Open output file and write header
-    #
-    FNULL = open(os.devnull, 'w')
 
     region_list = []
     if region_file:
@@ -549,8 +550,9 @@ def Pileup_and_count(
         compare_flag = False
 
     else:
-        logging.error( "Input file: {file} not found.".format( file = args.in_bam1 +" "+ args.in_bam2 ) )
-        raise
+        logging.error( "Input file: {file} not found.".format( file = in_bam1 +" "+ in_bam2 ) )
+        raise ValueError()
+
 
     #
     # multi thread
@@ -559,7 +561,7 @@ def Pileup_and_count(
         jobs = []
         for idx, target_regions in enumerate(region_list):
             proc = multiprocessing.Process(target = Pileup_command_multi_thread, \
-                args = (FNULL, target_regions, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, "."+str(idx), compare_flag))
+                args = (target_regions, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, "."+str(idx), compare_flag))
             jobs.append(proc)
             proc.start()
 
@@ -570,7 +572,7 @@ def Pileup_and_count(
             for idx,target_regions in enumerate(region_list):
                 with open(out_file +"."+ str(idx), 'r') as hin:
                     for line in hin:
-                        print >> w, line.rstrip('\n') 
+                        print(line.rstrip('\n'), file=w)
          
         subprocess.check_output(["sort", "-k1,1", "-k2,2n", "-V", "-o", out_file+".sorted", out_file+".unsorted"])
 
@@ -579,7 +581,7 @@ def Pileup_and_count(
                 Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
             with open(out_file +".sorted", 'r') as hin:
                 for line in hin:
-                    print >> w, line.rstrip('\n') 
+                    print(line.rstrip('\n'), file=w)
 
         for idx, target_regions in enumerate(region_list):
             os.remove(out_file +"."+ str(idx))
@@ -593,6 +595,5 @@ def Pileup_and_count(
         with open(out_file, 'w') as w:
             if header_flag:
                 Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
-            Pileup_command(FNULL, region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, w)
+            Pileup_command(region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, w)
             
-    FNULL.close()

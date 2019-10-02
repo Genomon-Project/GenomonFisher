@@ -11,8 +11,8 @@ import re
 import scipy.special
 from scipy.stats import fisher_exact as fisher
 import math
-import util
-import const
+from . import util
+from . import const
 
 ############################################################
 def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, posterior_10_quantile, fisher_threshold, min_variant_read ):
@@ -61,7 +61,11 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
         #
         # InDel output
         #
-        if data[ const.POS_DATA1 ].has_key( 'bases' ):
+        # print("-----------------------")
+        # print(data[ const.POS_DATA1] )
+        # print(data)
+        # print("-----------------------")
+        if 'bases' in data[ const.POS_DATA1 ]:
             indel_number = 0
             for type in data[ const.POS_DATA1 ][ 'indel' ].keys():
                 for bases in data[ const.POS_DATA1 ][ 'indel' ][ type ].keys():

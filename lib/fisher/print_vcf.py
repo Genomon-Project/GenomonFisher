@@ -10,7 +10,7 @@ import os
 import re
 import scipy.special
 from scipy.stats import fisher_exact as fisher
-import const
+from . import const
 import math
 
 ############################################################
@@ -67,7 +67,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
         #
         # InDel output
         #
-        if data[ const.POS_DATA1 ].has_key( 'bases' ):
+        if 'bases' in data[ const.POS_DATA1 ]:
             indel_number = 0
             for type in data[ const.POS_DATA1 ][ 'indel' ].keys():
                 for bases in data[ const.POS_DATA1 ][ 'indel' ][ type ].keys():
@@ -243,14 +243,14 @@ def print_meta(w, ref_dict,sample1,sample2,bam1,bam2,ref_fa):
     #     w.write('##SAMPLE=<ID='+sample2+',SampleName='+sample2+',File='+bam2+'\n')
 
     # print reference information
-    hIN = open(ref_dict)
-    for line in hIN:
-        F = line.rstrip('\n').split('\t')
-        if F[0] == '@SQ':
-            ID = F[1].replace('SN:','')
-            length = F[2].replace('LN:','')
-            w.write('##contig=<ID='+ID+',length='+length+'>\n')
-    w.write('##reference='+ref_fa+'\n')
+    with open(ref_dict) as hIN:
+        for line in hIN:
+            F = line.rstrip('\n').split('\t')
+            if F[0] == '@SQ':
+                ID = F[1].replace('SN:','')
+                length = F[2].replace('LN:','')
+                w.write('##contig=<ID='+ID+',length='+length+'>\n')
+        w.write('##reference='+ref_fa+'\n')
 
 ############################################################
 def print_header_pair(w, sample1, sample2):
