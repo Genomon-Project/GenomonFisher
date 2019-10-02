@@ -2,7 +2,7 @@
 Genomon fisher exact test mutation caller
 
 ## Dependency
-Python (>= 2.7, >= 3.7), pysam, scipy, builtins
+Python (>= 2.7, >= 3.7), pysam, scipy, builtins,
 samtools
 
 ## Install
