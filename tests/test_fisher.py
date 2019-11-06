@@ -3,7 +3,8 @@
 import sys
 import unittest
 import os, tempfile, shutil, filecmp
-from lib.fisher import fisher
+from genomon_fisher import fisher
+import genomon_fisher
 
 
 class TestFisher(unittest.TestCase):
@@ -958,6 +959,37 @@ class TestFisher(unittest.TestCase):
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test37.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
 
+
+    ######################################
+    # Tumor/Normal Pair, Execute
+    ######################################
+    
+    def test41(self):
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        in_bam1 = cur_dir + "/../data/5929_tumor_small.markdup.bam"
+        in_bam2 = cur_dir + "/../data/5929_control_small.markdup.bam"
+        sample1 = "5929_tumor"
+        sample2 = "5929_control"
+        out_file =  cur_dir + "/../data/5929_small_mutation_result_test41.txt"
+        ref_fa  = cur_dir + "/../data/GRCh37.fa"
+        baseq_thres = 15
+        mismatch_rate_disease = 0.07
+        mismatch_rate_normal = 0.1
+        post_10_q = None
+        fisher_threshold = 0.05
+        min_depth = 10
+        header_flag = True
+        min_variant_read = 4
+        samtools = self.samtools
+        samtools_params = "-q 30 -BQ0 -d 10000000"
+        region = None
+        region_file = None
+        is_anno = True
+        answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test1.txt"
+        parser = genomon_fisher.parser.create_parser()
+        args = parser.parse_args(["comparison", "-1", in_bam1, "-2", in_bam2, "-a", sample1, "-b", sample2, "-o", out_file, "-r", ref_fa, "-s", samtools, "-S", samtools_params, "-Q", str(baseq_thres),  "-m", str(mismatch_rate_disease), "-M", str(mismatch_rate_normal), "-f", str(fisher_threshold), "-d", str(min_depth), "-v", str(min_variant_read), "-e"])
+        args.func(args)
+        self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
 
 if __name__ == "__main__":
     unittest.main()

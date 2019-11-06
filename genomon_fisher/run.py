@@ -4,7 +4,7 @@ import sys
 import os
 import argparse
 import logging
-import fisher
+from . import fisher
 
 def run_compare(args):
 
