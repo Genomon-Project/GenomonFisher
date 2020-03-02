@@ -3,7 +3,7 @@
 wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/gap.txt.gz
 
 # Convert to bed format
-No Script
+zcat gap.txt.gz | cut -f 2- | sort -k1,1 -k2,2n -k3,3n > gap.bed 
 
 # Merge Bed
 bedtools merge -i gap.bed > gap.merge.bed
