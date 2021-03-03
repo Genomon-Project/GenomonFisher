@@ -17,26 +17,21 @@ python setup.py install
 ## Run
 Disease sample vs. Control sample Comparison
 ```
-fisher comparison [-h] -1 Disease.bam -2 Control.bam -o Output_text
-                  -r Reference_genome_in_fasta_format -s Samtools_path
-                  [-q Mapping_quality_threshold (30)] [-Q Base_quality_threshold (15)]
-                  [-m Minimum_amount_of_disease_allele_frequency (0.07)]
-                  [-M Maximum_amount_of_control_allele_frequency (0.1)]
-                  [-f Fisher_thres_hold (0.05)] [-d Minimum_depth (10)] 
-                  [-v Minimum_variant_read (4)] 
-                  [-e (Print_header)] [-g Log_file] [-l Log_level (DEBUG)]
+usage: fisher comparison [-h] -1 BAM1 -2 BAM2 [-a SAMPLE1] [-b SAMPLE2] -o
+                         OUTPUT -r REF_FA -s SAMTOOLS_PATH
+                         [-S SAMTOOLS_PARAMS] [-Q BASE_QUALITY]
+                         [-m MIN_ALLELE_FREQ] [-M MAX_ALLELE_FREQ]
+                         [-f FISHER_VALUE] [-d MIN_DEPTH]
+                         [-v MIN_VARIANT_READ] [-R REGION] [-L REGIONS]
+                         [-O {vcf,anno}] [-e] [-g LOG_FILE] [-l LOG_LEVEL]
 
 ```
 Single sample mutation calling
 ```
-fisher single [-h] -1 target.bam -o Output.text 
-              -r Reference_genome_in_fasta_format -s Samtools_path
-              [-q Mapping_quality_threshold (30)] [-Q Base_quality_threshold (15)]
-              [-m Minimum_amount_of_allele_frequency (0.07)]
-              [-p 10_percent_posterior_quantile_threshold (0.02)]
-              [-d Minimum_depth (10)]
-              [-v Minimum_variant_read (4)] 
-              [-e (Print_header)] [-g Log_file] [-l Log_level (DEBUG)]
-
+usage: fisher single [-h] -1 BAM1 [-a SAMPLE1] -o OUTPUT -r REF_FA -s
+                     SAMTOOLS_PATH [-S SAMTOOLS_PARAMS] [-Q BASE_QUALITY]
+                     [-m MIN_ALLELE_FREQ] [-p POST_10_Q] [-d MIN_DEPTH]
+                     [-v MIN_VARIANT_READ] [-R REGION] [-L REGIONS]
+                     [-O {vcf,anno}] [-e] [-g LOG_FILE] [-l LOG_LEVEL]
 ```
 
