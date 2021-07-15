@@ -25,7 +25,7 @@ def run_compare(args):
         if args.sample1 == None or args.sample2 == None:
             raise ValueError('--sample1 and --sample2 are required for vcf.') 
 
-    if args.regions != None or args.positions != None:
+    if args.regions != None and args.positions != None:
         raise ValueError('--regions and --positions cannot be specified at the same time.') 
 
     #
@@ -74,7 +74,7 @@ def run_single(args):
         if args.sample1 == None:
             raise ValueError('--sample1 is required for vcf.') 
 
-    if args.regions != None or args.positions != None:
+    if args.regions != None and args.positions != None:
         raise ValueError('--regions and --positions cannot be specified at the same time.') 
 
     #
