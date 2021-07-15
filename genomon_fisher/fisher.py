@@ -383,6 +383,7 @@ def Pileup_command(
         is_anno,
         out_file,
         compare_flag,
+        positions_bed,
         w
         ):
 
@@ -391,7 +392,7 @@ def Pileup_command(
     if regions:
         region_list = regions.split(",")   
         end_idx =len(region_list)
-
+        
     with open(os.devnull, 'w') as FNULL:
     
         for idx in range(end_idx):
@@ -401,6 +402,10 @@ def Pileup_command(
             if regions:
                 cmd_list_copy.insert(2, '-r')
                 cmd_list_copy.insert(3, region_list[idx])
+
+            if positions_bed:
+                cmd_list_copy.insert(2, '-l')
+                cmd_list_copy.insert(3, positions_bed)
 
             pileup = subprocess.Popen(cmd_list_copy, stdout=subprocess.PIPE)
             for mpileup in pileup.stdout:
@@ -505,6 +510,7 @@ def Pileup_and_count(
         samtools_params,
         region,
         region_file,
+        positions_bed,
         is_anno
         ):
     global target
@@ -595,5 +601,5 @@ def Pileup_and_count(
         with open(out_file, 'w') as w:
             if header_flag:
                 Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
-            Pileup_command(region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, w)
+            Pileup_command(region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, positions_bed, w)
             

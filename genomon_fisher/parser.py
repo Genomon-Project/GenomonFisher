@@ -37,6 +37,7 @@ def create_parser():
         fisher_pair_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
         fisher_pair_parser.add_argument( '-R', '--region', help = 'Region in which pileup is generated', type = str, default = None )
         fisher_pair_parser.add_argument( '-L', '--regions', help = 'The file path of list regions in which pileup is generated', type = str, default = None )
+        fisher_pair_parser.add_argument( '-P', '--positions', help = 'The file path of the bed output by pileup.', type = str, default = None )
         
         fisher_pair_parser.add_argument( '-O', '--print_format', choices = ['vcf','anno'], help = 'Print VCF or anno(TSV) format',  default = 'anno' )
         fisher_pair_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
@@ -62,6 +63,7 @@ def create_parser():
         fisher_single_parser.add_argument( '-v', '--min_variant_read', help = 'Mimimum amount of variant reads (disease)', type = int, default = 4 )
         fisher_single_parser.add_argument( '-R', '--region', help = 'region in which pileup is generated', type = str, default = None )
         fisher_single_parser.add_argument( '-L', '--regions', help = 'The file path of list regions in which pileup is generated', type = str, default = None )
+        fisher_single_parser.add_argument( '-P', '--positions', help = 'The file path of the bed output by pileup.', type = str, default = None )
         
         fisher_single_parser.add_argument( '-O', '--print_format', choices = ['vcf','anno'], help = 'Print VCF or anno(TSV) format',  default = 'anno' )
         fisher_single_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
