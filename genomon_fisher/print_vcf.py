@@ -41,7 +41,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             # Genomon output for barcode
             # CHROM{0} \t POS{1} \t ID{2} \t REF{3} \t ALT{4} \t QUAL{5} \t FILTER{6} \t DP={7},AF={9},SB={10} \t FORMAT
             # outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tDP={7};AF={8:.3f};SB={9:.3f}\tDP,DPF,DPR,AD,ADF,ADR,BD1,BDM,BD9\t{7},{10},{11},{12},{13},{14},{15:.3f},{16:.3f},{17:.3f}\n'.format(
-            outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tB10={7:.3f};BM={8:.3f};B90={9:.3f}\tDP:DPF:DPR:AD:ADF:ADR:AF:SB\t{10}:{11}:{12}:{13}:{14}:{15}:{16:.3f}:{17:.3f}\n'.format(
+            outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tB10={7:.3f};BM={8:.3f};B90={9:.3f}\tGT:DP:DPF:DPR:AD:ADF:ADR:AF:SB\t{10}:{11}:{12}:{13}:{14}:{15}:{16}:{17:.3f}:{18:.3f}\n'.format(
                         data[ const.POS_CHR ],
                         data[ const.POS_COORD ],
                         '.',
@@ -52,6 +52,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ const.POS_DATA1 ][ '0.1' ],
                         data[ const.POS_DATA1 ][ 'mid' ],
                         data[ const.POS_DATA1 ][ '0.9' ],
+                        '0/1',
                         data[ const.POS_DATA1 ][ 'proper_read_depth' ],
                         data[ const.POS_DATA1 ][ 'proper_read_depth_plus' ],
                         data[ const.POS_DATA1 ][ 'proper_read_depth_minus' ],
@@ -77,7 +78,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         (data[ const.POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ] / float( data[ const.POS_DATA1 ][ 'depth' ])) > mismatch_rate_disease and
                          data[ const.POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'both' ] >= min_variant_read
                         ):
-                            outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tB10={7:.3f};BM={8:.3f};B90={9:.3f}\tDP:DPF:DPR:AD:ADF:ADR:AF:SB\t{10}:{11}:{12}:{13}:{14}:{15}:{16:.3f}:{17:.3f}\n'.format(
+                            outstr = '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tB10={7:.3f};BM={8:.3f};B90={9:.3f}\tGT:DP:DPF:DPR:AD:ADF:ADR:AF:SB\t{10}:{11}:{12}:{13}:{14}:{15}:{16}:{17:.3f}:{18:.3f}\n'.format(
                                         data[ const.POS_CHR ],
                                         data[ const.POS_COORD ],
                                         '.',
@@ -88,6 +89,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                                         data[ const.POS_DATA1 ][ 'indel' ][ type ][ bases ][ '0.1' ],
                                         data[ const.POS_DATA1 ][ 'indel' ][ type ][ bases ][ 'mid' ],
                                         data[ const.POS_DATA1 ][ 'indel' ][ type ][ bases ][ '0.9' ],
+                                        '0/1',
                                         data[ const.POS_DATA1 ][ 'proper_read_depth_indel' ],
                                         data[ const.POS_DATA1 ][ 'proper_read_depth_indel_plus' ],
                                         data[ const.POS_DATA1 ][ 'proper_read_depth_indel_minus' ],
@@ -123,7 +125,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             #
             ###
             data2_s_ratio = '{0:.3f}'.format(data[ const.POS_DATA2 ][ 's_ratio' ]) if 's_ratio' in data[ const.POS_DATA2 ].keys() else "."
-            outstr = ('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tFP={7:.3f}\tDP:DPF:DPR:AD:ADF:ADR:AF:SB'.format(
+            outstr = ('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tFP={7:.3f}\tGT:DP:DPF:DPR:AD:ADF:ADR:AF:SB'.format(
                         data[ const.POS_CHR ],
                         data[ const.POS_COORD ],
                         '.',
@@ -133,7 +135,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         '.',
                         data[ const.POS_FISHER_SNV ]
                         )
-                     + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6:.3f}:{7:.3f}'.format(
+                     + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7:.3f}:{8:.3f}'.format(
+                        '0/1',
                         data[ const.POS_DATA1 ][ 'proper_read_depth' ],
                         data[ const.POS_DATA1 ][ 'proper_read_depth_plus' ],
                         data[ const.POS_DATA1 ][ 'proper_read_depth_minus' ],
@@ -143,7 +146,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                         data[ const.POS_DATA1 ][ 'mis_rate' ],
                         data[ const.POS_DATA1 ][ 's_ratio' ]
                         )
-                     + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6:.3f}:{7}'.format(
+                     + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7:.3f}:{8}'.format(
+                        '0/0',
                         data[ const.POS_DATA2 ][ 'proper_read_depth' ],
                         data[ const.POS_DATA2 ][ 'proper_read_depth_plus' ],
                         data[ const.POS_DATA2 ][ 'proper_read_depth_minus' ],
@@ -181,7 +185,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
 
                         data2_s_ratio = '{0:.3f}'.format(data[ const.POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio' ]) if 's_ratio' in data[ const.POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ].keys() else "."
                         ###
-                        outstr = ('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tFP={7:.3f}\tDP:DPF:DPR:AD:ADF:ADR:AF:SB'.format(
+                        outstr = ('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\tFP={7:.3f}\tGT:DP:DPF:DPR:AD:ADF:ADR:AF:SB'.format(
                                     data[ const.POS_CHR ],
                                     data[ const.POS_COORD ], 
                                     '.',
@@ -191,7 +195,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                                     '.',
                                     float(fisher_value)
                                     )
-                                 + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6:.3f}:{7:.3f}'.format(
+                                 + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7:.3f}:{8:.3f}'.format(
+                                    '0/1',
                                     data[ const.POS_DATA1 ][ 'proper_read_depth_indel' ],
                                     data[ const.POS_DATA1 ][ 'proper_read_depth_indel_plus' ],
                                     data[ const.POS_DATA1 ][ 'proper_read_depth_indel_minus' ],
@@ -201,7 +206,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
                                     data[ const.POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ const.POS_DATA1 ][ 'proper_read_depth_indel' ]),
                                     data[ const.POS_DATA1 ][ 'indel' ][ data_type_symbol ][ bases ][ 's_ratio']
                                     )
-                                 + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6:.3f}:{7}'.format(
+                                 + '\t{0}:{1}:{2}:{3}:{4}:{5}:{6}:{7:.3f}:{8}'.format(
+                                    '0/0',
                                     data[ const.POS_DATA2 ][ 'proper_read_depth_indel' ],
                                     data[ const.POS_DATA2 ][ 'proper_read_depth_indel_plus' ],
                                     data[ const.POS_DATA2 ][ 'proper_read_depth_indel_minus' ],
@@ -228,6 +234,7 @@ def print_meta(w, ref_dict,sample1,sample2,bam1,bam2,ref_fa):
         w.write('##INFO=<ID=B10,Number=1,Type=Float,Description="10% posterior quantile of the beta distribution">\n')
         w.write('##INFO=<ID=BM,Number=1,Type=Float,Description="Posterior mean">\n')
         w.write('##INFO=<ID=B90,Number=1,Type=Float,Description="90% posterior quantile of the beta distribution">\n')
+    w.write('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n')
     w.write('##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read Depth">\n')
     w.write('##FORMAT=<ID=DPF,Number=1,Type=Integer,Description="Read depth in the forward strand">\n')
     w.write('##FORMAT=<ID=DPR,Number=1,Type=Integer,Description="Read depth in the reverse strand">\n')
