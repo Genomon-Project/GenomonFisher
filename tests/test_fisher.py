@@ -11,9 +11,9 @@ class TestFisher(unittest.TestCase):
 
     def setUp(self):
         if sys.version_info.major == 2:
-            samtools = "/home/ubuntu/miniconda2/bin/samtools"
+            samtools = "samtools"
         else:
-            samtools = "/home/ubuntu/miniconda3/bin/samtools"
+            samtools = "samtools"
         self.samtools = samtools 
 
 

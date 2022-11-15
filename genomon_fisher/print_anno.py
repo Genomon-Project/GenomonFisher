@@ -132,8 +132,8 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             data[ const.POS_DATA2 ][ 'proper_read_depth' ] >= min_depth    and
             data[ const.POS_DATA1 ][ 'proper_read_depth' ] >= min_depth    and
             data[ const.POS_DATA1 ][ 'mis_base' ]    !=  data[ const.POS_REF ]   and
-            data[ const.POS_FISHER_SNV ]           >  fisher_threshold_log and
-            data[ const.POS_DATA1 ][ 'total_' + data[ const.POS_DATA1 ][ 'mis_base' ] ] >= min_variant_read
+            data[ const.POS_DATA1 ][ 'total_' + data[ const.POS_DATA1 ][ 'mis_base' ] ] >= min_variant_read and 
+            (data[ const.POS_FISHER_SNV ] >  fisher_threshold_log or data[ const.POS_DATA2 ][ 'total_' + data[ const.POS_DATA1 ][ 'mis_base' ] ] == 0)
            ):
             #
             # Genomon output for fisher by comparing nomral and tumor
@@ -192,12 +192,13 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
         for data_type in ( const.POS_FISHER_DEL, const.POS_FISHER_INS ):
             for indel_data in [ x for x in data[ data_type ].split( ',' ) if x != 'N:1.0' ]:
                 bases, fisher_value = indel_data.split( ':' )
-                if float( fisher_value ) > fisher_threshold_log:
+                data_type_symbol = '-' if data_type == const.POS_FISHER_DEL else '+'
+                if float( fisher_value) >  fisher_threshold_log or data[ const.POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] == 0:
+
                     #
                     # Genomon output for fisher by comparing nomral and tumor
                     # chr \t start \t end \t ref1 \t obs1 \tdepth1 \t obs_depth \t ratio \t
                     #
-                    data_type_symbol = '-' if data_type == const.POS_FISHER_DEL else '+'
                     if (data[ const.POS_DATA2 ][ 'proper_read_depth_indel' ] >= min_depth and
                         data[ const.POS_DATA1 ][ 'proper_read_depth_indel' ] >= min_depth and
                         (data[ const.POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] / float( data[ const.POS_DATA2 ][ 'proper_read_depth_indel' ] )) < mismatch_rate_normal and
