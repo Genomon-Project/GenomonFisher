@@ -25,7 +25,7 @@ const.POS_FISHER_DEL = 7
 const.POS_COUNT = 8
 
 ############################################################
-def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, posterior_10_quantile, fisher_threshold, min_variant_read ):
+def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, posterior_10_quantile, fisher_threshold, min_variant_read, flag_mis_base_0):
 
     if data[ const.POS_COUNT ] == 1:
         #
@@ -115,7 +115,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             data[ const.POS_DATA1 ][ 'proper_read_depth' ] >= min_depth    and
             data[ const.POS_DATA1 ][ 'mis_base' ]    !=  data[ const.POS_REF ]   and
             data[ const.POS_DATA1 ][ 'total_' + data[ const.POS_DATA1 ][ 'mis_base' ] ] >= min_variant_read and
-            (data[ const.POS_FISHER_SNV ] >  fisher_threshold_log or data[ const.POS_DATA2 ][ 'total_' + data[ const.POS_DATA1 ][ 'mis_base' ] ] == 0)
+            (data[ const.POS_FISHER_SNV ] >  fisher_threshold_log or (data[ const.POS_DATA2 ][ 'total_' + data[ const.POS_DATA1 ][ 'mis_base' ] ] == 0 and flag_mis_base_0 == True))
            ):
             #
             # Genomon output for fisher by comparing nomral and tumor
@@ -166,7 +166,7 @@ def print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal,
             for indel_data in [ x for x in data[ data_type ].split( ',' ) if x != 'N:1.0' ]:
                 bases, fisher_value = indel_data.split( ':' )
                 data_type_symbol = '-' if data_type == const.POS_FISHER_DEL else '+'
-                if float( fisher_value) >  fisher_threshold_log or data[ const.POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] == 0:
+                if float( fisher_value) >  fisher_threshold_log or (data[ const.POS_DATA2 ][ 'indel' ][ data_type_symbol ][ bases ][ 'both' ] == 0 and flag_mis_base_0 == True):
 
                     #
                     # Genomon output for fisher by comparing nomral and tumor

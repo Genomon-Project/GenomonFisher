@@ -51,7 +51,8 @@ def run_compare(args):
             region = args.region,
             region_file = args.regions,
             positions_bed = args.positions,
-            is_anno = is_anno
+            is_anno = is_anno,
+            flag_mis_base_0 = args.flag_mis_base_0
           )
 
 
@@ -100,5 +101,6 @@ def run_single(args):
             region = args.region,
             region_file = args.regions,
             positions_bed = args.positions,
-            is_anno = is_anno
+            is_anno = is_anno,
+            flag_mis_base_0 = args.flag_mis_base_0
           )
