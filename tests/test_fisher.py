@@ -45,7 +45,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test1.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -75,7 +75,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test2.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -105,7 +105,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test2.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -135,7 +135,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test4.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -165,7 +165,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test4.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -195,7 +195,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test6.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -225,7 +225,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test7.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -255,7 +255,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test2.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -285,7 +285,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test9.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -315,7 +315,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test7.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -348,7 +348,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test11.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -378,7 +378,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test12.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -408,7 +408,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test13.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -438,7 +438,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test14.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -468,7 +468,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test15.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -498,7 +498,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test16.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -528,7 +528,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test17.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -558,7 +558,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test13.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -588,7 +588,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test19.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -618,7 +618,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test17.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -651,7 +651,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test21.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -681,7 +681,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test22.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -711,7 +711,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test22.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -741,7 +741,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test24.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -771,7 +771,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test24.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -801,7 +801,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test26.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -831,7 +831,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test27.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -861,7 +861,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test27.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -894,7 +894,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test31.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -924,7 +924,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test32.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -954,7 +954,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test33.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -984,7 +984,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test34.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -1014,7 +1014,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test35.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -1044,7 +1044,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test36.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -1074,7 +1074,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test37.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
@@ -1104,7 +1104,7 @@ class TestFisher(unittest.TestCase):
         fisher.Pileup_and_count(in_bam1, in_bam2, sample1, sample2, out_file, ref_fa,
         baseq_thres, mismatch_rate_disease, mismatch_rate_normal, post_10_q,
         fisher_threshold, min_depth, header_flag, min_variant_read, samtools,
-        samtools_params, region, region_file, positions_bed, is_anno, True
+        samtools_params, region, region_file, positions_bed, is_anno, True, mismatch_rate_disease
         )
         answer_file = cur_dir + "/../data/5929_small_mutation_result_answer_test37.txt"
         self.assertTrue(filecmp.cmp(out_file, answer_file, shallow=False))
