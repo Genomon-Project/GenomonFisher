@@ -53,7 +53,8 @@ def run_compare(args):
             positions_bed = args.positions,
             is_anno = is_anno,
             flag_mis_base_0 = args.flag_mis_base_0,
-            mismatch_rate_base_0 = args.mismatch_rate_base_0
+            mismatch_rate_base_0 = args.mismatch_rate_base_0,
+            fisher_threshold_log_base_0 = args.fisher_threshold_log_base_0
           )
 
 
@@ -104,5 +105,6 @@ def run_single(args):
             positions_bed = args.positions,
             is_anno = is_anno,
             flag_mis_base_0 = args.flag_mis_base_0,
-            mismatch_rate_base_0 = args.mismatch_rate_base_0
+            mismatch_rate_base_0 = args.mismatch_rate_base_0,
+            fisher_threshold_log_base_0 = args.fisher_threshold_log_base_0
           )

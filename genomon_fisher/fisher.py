@@ -386,7 +386,8 @@ def Pileup_command(
         positions_bed,
         w,
         flag_mis_base_0,
-        mismatch_rate_base_0
+        mismatch_rate_base_0,
+        fisher_threshold_log_base_0
         ):
 
 
@@ -414,9 +415,9 @@ def Pileup_command(
                 data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
                 if data:
                     if is_anno:
-                        print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0)
+                        print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0, fisher_threshold_log_base_0)
                     else:
-                        print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0)
+                        print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0, fisher_threshold_log_base_0)
             pileup.stdout.close()  
             pileup.wait()
 
@@ -435,7 +436,8 @@ def Pileup_command_multi_thread(
         thread_str,
         compare_flag,
         flag_mis_base_0,
-        mismatch_rate_base_0
+        mismatch_rate_base_0,
+        fisher_threshold_log_base_0
         ):
 
     with open(out_file + thread_str, 'w') as w, open(os.devnull, 'w') as FNULL:
@@ -454,9 +456,9 @@ def Pileup_command_multi_thread(
                 data = Pileup_out( mpileup, w, min_depth, min_variant_read, compare_flag) 
                 if data:
                     if is_anno:
-                        print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0)
+                        print_anno.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0, fisher_threshold_log_base_0)
                     else:
-                        print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0)
+                        print_vcf.print_data( data, w, min_depth, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, min_variant_read, flag_mis_base_0, mismatch_rate_base_0, fisher_threshold_log_base_0)
             pileup.stdout.close()
             pileup.wait()
             
@@ -517,7 +519,8 @@ def Pileup_and_count(
         positions_bed,
         is_anno,
         flag_mis_base_0,
-        mismatch_rate_base_0
+        mismatch_rate_base_0,
+        fisher_threshold_log_base_0
         ):
     global target
     global remove_chr
@@ -573,7 +576,7 @@ def Pileup_and_count(
         jobs = []
         for idx, target_regions in enumerate(region_list):
             proc = multiprocessing.Process(target = Pileup_command_multi_thread, \
-                args = (target_regions, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, "."+str(idx), compare_flag, flag_mis_base_0, mismatch_rate_base_0))
+                args = (target_regions, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, "."+str(idx), compare_flag, flag_mis_base_0, mismatch_rate_base_0, fisher_threshold_log_base_0))
             jobs.append(proc)
             proc.start()
 
@@ -607,5 +610,5 @@ def Pileup_and_count(
         with open(out_file, 'w') as w:
             if header_flag:
                 Print_header(w, in_bam1, in_bam2, sample1, sample2, ref_fa, is_anno)
-            Pileup_command(region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, positions_bed, w, flag_mis_base_0, mismatch_rate_base_0)
+            Pileup_command(region, cmd_list, min_depth, min_variant_read, mismatch_rate_disease, mismatch_rate_normal, post_10_q, fisher_threshold, is_anno, out_file, compare_flag, positions_bed, w, flag_mis_base_0, mismatch_rate_base_0, fisher_threshold_log_base_0)
             

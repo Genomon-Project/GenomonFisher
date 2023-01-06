@@ -40,6 +40,7 @@ def create_parser():
         fisher_pair_parser.add_argument( '-P', '--positions', help = 'The file path of the bed output by pileup.', type = str, default = None )
         fisher_pair_parser.add_argument( '-D', '--flag_mis_base_0', help = 'Ignore the fisher threshold when the number of mismatches is 0 in normal bam.', action = 'store_true', default = False )
         fisher_pair_parser.add_argument( '-A', '--mismatch_rate_base_0', help = 'minimum amount of disease allele frequency when the number of mismatches is 0 in normal bam.', type = float, default = 0.07 )
+        fisher_pair_parser.add_argument( '-F', '--fisher_threshold_log_base_0', help = 'fisher threshold when the number of mismatches is 0 in normal bam.', type = float, default = 0.05 )
         
         fisher_pair_parser.add_argument( '-O', '--print_format', choices = ['vcf','anno'], help = 'Print VCF or anno(TSV) format',  default = 'anno' )
         fisher_pair_parser.add_argument( '-e', '--print_header', help = 'Print header', action = 'store_true', default = False )
